@@ -1,0 +1,14 @@
+{
+  "appId": "com.checklist.its",
+  "appName": "CheklistITS",
+  "webDir": "www",
+  "bundledWebRuntime": false,
+  "server": {
+    "cleartext": true,
+    "allowNavigation": ["*"]
+  },
+  "android": {
+    "allowMixedContent": true,
+    "captureInput": true
+  }
+}
