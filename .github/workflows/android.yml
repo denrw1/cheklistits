@@ -71,11 +71,11 @@ jobs:
         # Поднимаем версию Android Gradle Plugin до актуальной 8.9.1
         sed -i 's/com.android.tools.build:gradle:8.7.2/com.android.tools.build:gradle:8.9.1/g' android/build.gradle
 
-        # Исправление конфликта Kotlin (Duplicate Classes) через ResolutionStrategy
-        sed -i '/allprojects {/a \    configurations.all {\n        resolutionStrategy.eachDependency { DependencyResolveDetails details ->\n            if (details.requested.group == "org.jetbrains.kotlin") {\n                details.useVersion "1.9.22"\n            }\n        }\n    }' android/build.gradle
+        # Жестко фиксируем версию Kotlin на требуемой компилятором отметке 2.2.20 для устранения несоответствия Build Tools API
+        sed -i '/allprojects {/a \    configurations.all {\n        resolutionStrategy.eachDependency { DependencyResolveDetails details ->\n            if (details.requested.group == "org.jetbrains.kotlin") {\n                details.useVersion "2.2.20"\n            }\n        }\n    }' android/build.gradle
         
         echo "android.useAndroidX=true" >> android/gradle.properties
-        echo "Все исправления версий и плагина Gradle под Android 36 применены."
+        echo "Все исправления версий Kotlin 2.2.20 и плагина Gradle под Android 36 применены."
 
     - name: Build APK via Gradle
       run: |
