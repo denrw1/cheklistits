@@ -1,4 +1,4 @@
-name: Build Android APK
+name: Build Android APK (Capacitor)
 
 on:
   workflow_dispatch:
@@ -22,37 +22,35 @@ jobs:
         distribution: 'zulu'
         java-version: '17'
 
-    - name: Install Cordova & Android Tools
-      run: |
-        npm install -g cordova
-        sudo apt-get update
-        sudo apt-get install -y android-sdk
+    - name: Install Android SDK
+      uses: android-actions/setup-android@v3
 
-    - name: Create Mobile Wrapper
+    - name: Initialize Project & Build Code
       run: |
-        # 1. Создаем проект Cordova
-        cordova create myapp com.checklist.its CheklistITS
-        cd myapp
-        cordova platform add android --no-telemetry
+        # 1. Создаем структуру и устанавливаем Capacitor
+        npm init -y
+        npm install @capacitor/core @capacitor/cli @capacitor/android
         
-        # 2. Устанавливаем плагин для работы с файловой системой
-        cordova plugin add cordova-plugin-file --no-telemetry
+        # 2. Создаем папку для веб-кода и копируем ваш index.html
+        mkdir www
+        cp -f index.html ./www/index.html
         
-        # 3. Вычищаем дефолтный шаблон
-        rm -rf www/*
+        # 3. Инициализируем Capacitor и добавляем платформу Android
+        npx cap init CheklistITS com.checklist.its --web-dir=www
+        # Копируем созданный вами ранее жесткий конфиг, если нужно
+        cp -f capacitor.config.json ./capacitor.config.json || true
         
-        # 4. Копируем ВАШ index.html и ВАШ config.xml из корня репозитория
-        cp -f ../index.html ./www/index.html
-        cp -f ../config.xml ./config.xml
-        
-        # 5. Запускаем компиляцию
-        cordova build android --device --no-telemetry
+        npx cap add android
+
+    - name: Build APK via Gradle
+      run: |
+        cd android
+        chmod +x gradlew
+        ./gradlew assembleDebug
 
     - name: Find and Upload APK
       uses: actions/upload-artifact@v4
       with:
-        name: checklist-apk
-        path: |
-          myapp/platforms/android/app/build/outputs/apk/**/*.apk
-          **/*.apk
+        name: checklist-capacitor-apk
+        path: android/app/build/outputs/apk/debug/app-debug.apk
         if-no-files-found: error
