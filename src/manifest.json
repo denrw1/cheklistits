@@ -1,0 +1,52 @@
+{
+  "background_color": "#ffffff",
+  "dir": "ltr",
+  "display": "standalone",
+  "name": "CheklistITS",
+  "orientation": "any",
+  "scope": "/",
+  "short_name": "CheklistITS",
+  "start_url": "/CheklistITS",
+  "theme_color": "#ffffff",
+  "icons": [
+    {
+      "src": "https://asu-inspector-web-ap-a9np.bolt.host/vite.svg",
+      "type": "image/svg+xml",
+      "isSquare": false,
+      "isPng": false,
+      "isWebp": false,
+      "isJpg": false,
+      "width": 0,
+      "is512x512": false,
+      "is256x256": false,
+      "is192x192": false
+    },
+    {
+      "src": "https://bolt.new/static/og_default.png",
+      "type": "image/png",
+      "sizes": "1200x628",
+      "isSquare": false,
+      "isPng": true,
+      "isWebp": false,
+      "isJpg": false,
+      "width": 1200,
+      "is512x512": false,
+      "is256x256": false,
+      "is192x192": false
+    },
+    {
+      "src": "https://asu-inspector-web-ap-a9np.bolt.host/favicon.ico",
+      "type": "image/x-icon",
+      "isSquare": false,
+      "isPng": false,
+      "isWebp": false,
+      "isJpg": false,
+      "width": 0,
+      "is512x512": false,
+      "is256x256": false,
+      "is192x192": false
+    }
+  ],
+  "id": "CheklistITS",
+  "description": "CheklistITS"
+}
