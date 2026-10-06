@@ -34,7 +34,7 @@ jobs:
         cd myapp
         cordova platform add android --no-telemetry
         
-        # Очищаем дефолтные файлы Cordova и копируем ваш рабочий код
+        # Очищаем дефолтные файлы и копируем ваш index.html
         rm -rf www/*
         cp -r ../* www/ || true
         rm -rf www/myapp www/node_modules
@@ -42,15 +42,11 @@ jobs:
         # Запускаем сборку
         cordova build android --device --no-telemetry
 
-    - name: Find and Prepare APK
-      run: |
-        # Находим скомпилированный файл в подпапках myapp и копируем его в корень
-        find myapp/platforms/android/ -name "*.apk" -exec cp {} ./Cheklist-App.apk \;
-        echo "Файл APK успешно найден и подготовлен к отправке."
-
-    - name: Upload Finished APK
+    - name: Find and Upload APK
       uses: actions/upload-artifact@v4
       with:
         name: checklist-apk
-        path: ./Cheklist-App.apk
+        path: |
+          myapp/platforms/android/app/build/outputs/apk/**/*.apk
+          **/*.apk
         if-no-files-found: error
