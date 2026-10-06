@@ -47,6 +47,17 @@ jobs:
         # 5. Синхронизируем веб-код внутрь папки Android
         npx cap sync android
 
+    - name: Inject Native Android Camera Permissions
+      run: |
+        MANIFEST_PATH="android/app/src/main/AndroidManifest.xml"
+        
+        # Принудительно прописываем системные разрешения Android перед закрывающим тегом </manifest>
+        sed -i '/<\/manifest>/i \    <uses-permission android:name="android.permission.CAMERA" />' $MANIFEST_PATH
+        sed -i '/<\/manifest>/i \    <uses-permission android:name="android.permission.FLASHLIGHT" />' $MANIFEST_PATH
+        sed -i '/<\/manifest>/i \    <uses-feature android:name="android.hardware.camera" android:required="true" />' $MANIFEST_PATH
+        
+        echo "Системные разрешения камеры успешно внедрены в AndroidManifest.xml"
+
     - name: Force Fix SDK Versions & Gradle Configurations
       run: |
         # Поднимаем minSdkVersion до 24 во всех конфигурационных файлах
@@ -71,11 +82,10 @@ jobs:
         # Поднимаем версию Android Gradle Plugin до актуальной 8.9.1
         sed -i 's/com.android.tools.build:gradle:8.7.2/com.android.tools.build:gradle:8.9.1/g' android/build.gradle
 
-        # Жестко фиксируем версию Kotlin на требуемой компилятором отметке 2.2.20 для устранения несоответствия Build Tools API
+        # Жестко фиксируем версию Kotlin на требуемой компилятором отметке 2.2.20
         sed -i '/allprojects {/a \    configurations.all {\n        resolutionStrategy.eachDependency { DependencyResolveDetails details ->\n            if (details.requested.group == "org.jetbrains.kotlin") {\n                details.useVersion "2.2.20"\n            }\n        }\n    }' android/build.gradle
         
         echo "android.useAndroidX=true" >> android/gradle.properties
-        echo "Все исправления версий Kotlin 2.2.20 и плагина Gradle под Android 36 применены."
 
     - name: Build APK via Gradle
       run: |
