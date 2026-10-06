@@ -22,12 +22,10 @@ jobs:
         distribution: 'zulu'
         java-version: '17'
 
-    - name: Set up Android SDK
-      uses: android-actions/setup-android@v3
-
     - name: Accept Android Licenses
       run: |
-        sdkmanager --licenses || true
+        # Используем предустановленный на машине GitHub SDK manager
+        yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses || true
 
     - name: Initialize Project & Build Code
       run: |
