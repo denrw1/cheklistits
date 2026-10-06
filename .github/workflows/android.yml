@@ -1,8 +1,6 @@
 name: Build Android APK
 
 on:
-  push:
-    branches: [ main, master ]
   workflow_dispatch:
 
 jobs:
@@ -16,25 +14,37 @@ jobs:
     - name: Set up Node.js
       uses: actions/setup-node@v4
       with:
-        node-version: 18
+        node-version: 20
 
     - name: Set up Java
       uses: actions/setup-java@v4
       with:
-        distribution: 'temurin'
+        distribution: 'zulu'
         java-version: '17'
 
-    - name: Install Bubblewrap CLI
-      run: npm install -g @bubblewrap/cli
-
-    - name: Generate Android Project from PWA
+    - name: Install Cordova & Android Tools
       run: |
-        # Автоматическая инициализация Bubblewrap под вашу рабочую ссылку
-        bubblewrap init --manifest="https://bolt.host" --meta=meta.json --confirm
-        bubblewrap build --confirm
+        npm install -g cordova
+        sudo apt-get update
+        sudo apt-get install -y android-sdk
+
+    - name: Create Mobile Wrapper
+      run: |
+        # Создаем чистое мобильное приложение, игнорируя защиту Bolt
+        cordova create myapp com.checklist.its CheklistITS
+        cd myapp
+        cordova platform add android --no-telemetry
+        
+        # Переносим файлы вашего сайта внутрь приложения
+        rm -rf www/*
+        cp -r ../* www/ || true
+        rm -rf www/myapp www/node_modules
+        
+        # Запускаем прямую компиляцию в APK
+        cordova build android --device --no-telemetry
 
     - name: Upload Finished APK
       uses: actions/upload-artifact@v4
       with:
-        name: asu-inspector-apk
-        path: ./*.apk
+        name: checklist-apk
+        path: myapp/platforms/android/app/build/outputs/apk/debug/app-debug.apk
