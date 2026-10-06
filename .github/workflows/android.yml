@@ -22,25 +22,35 @@ jobs:
         distribution: 'zulu'
         java-version: '17'
 
-    - name: Install Android SDK
+    - name: Set up Android SDK
       uses: android-actions/setup-android@v3
+
+    - name: Accept Android Licenses
+      run: |
+        sdkmanager --licenses || true
 
     - name: Initialize Project & Build Code
       run: |
-        # 1. Создаем структуру и устанавливаем Capacitor
+        # 1. Инициализируем Node-проект и ставим Capacitor CLI
         npm init -y
-        npm install @capacitor/core @capacitor/cli @capacitor/android
+        npm install @capacitor/core @capacitor/cli
         
-        # 2. Создаем папку для веб-кода и копируем ваш index.html
-        mkdir www
+        # 2. Создаем обязательную веб-папку и переносим ваш index.html
+        mkdir -p www
         cp -f index.html ./www/index.html
         
-        # 3. Инициализируем Capacitor и добавляем платформу Android
+        # 3. Инициализируем конфигурацию Capacitor
         npx cap init CheklistITS com.checklist.its --web-dir=www
-        # Копируем созданный вами ранее жесткий конфиг, если нужно
+        
+        # Принудительно заменяем дефолтный конфиг на ваш кастомный из репозитория
         cp -f capacitor.config.json ./capacitor.config.json || true
         
+        # 4. Устанавливаем мобильную платформу Android
+        npm install @capacitor/android
         npx cap add android
+        
+        # 5. Синхронизируем веб-код внутрь папки Android
+        npx cap sync android
 
     - name: Build APK via Gradle
       run: |
@@ -52,5 +62,7 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: checklist-capacitor-apk
-        path: android/app/build/outputs/apk/debug/app-debug.apk
+        path: |
+          android/app/build/outputs/apk/debug/app-debug.apk
+          **/*.apk
         if-no-files-found: error
