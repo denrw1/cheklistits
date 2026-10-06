@@ -7,8 +7,9 @@
     "cleartext": true,
     "allowNavigation": ["*"]
   },
-  "android": {
-    "allowMixedContent": true,
-    "captureInput": true
+  "plugins": {
+    "Preferences": {
+      "group": "CheklistITS_Storage"
+    }
   }
 }
