@@ -54,20 +54,28 @@ jobs:
         find android/ -name "build.gradle" -exec sed -i 's/minSdkVersion = 22/minSdkVersion = 24/g' {} \;
         find android/ -name "build.gradle" -exec sed -i 's/minSdkVersion = 21/minSdkVersion = 24/g' {} \;
         
+        # Принудительно поднимаем compileSdkVersion и targetSdkVersion до 36, чтобы удовлетворить androidx.core:core:1.17.0
+        find android/ -name "build.gradle" -exec sed -i 's/compileSdkVersion = 35/compileSdkVersion = 36/g' {} \;
+        find android/ -name "build.gradle" -exec sed -i 's/targetSdkVersion = 35/targetSdkVersion = 36/g' {} \;
+        find android/ -name "build.gradle" -exec sed -i 's/compileSdk = 35/compileSdk = 36/g' {} \;
+        find android/ -name "build.gradle" -exec sed -i 's/targetSdk = 35/targetSdk = 36/g' {} \;
+
         if [ -f android/variables.gradle ]; then
           sed -i 's/minSdkVersion = 23/minSdkVersion = 24/g' android/variables.gradle
           sed -i 's/minSdkVersion = 22/minSdkVersion = 24/g' android/variables.gradle
           sed -i 's/minSdkVersion = 21/minSdkVersion = 24/g' android/variables.gradle
+          sed -i 's/compileSdkVersion = 35/compileSdkVersion = 36/g' android/variables.gradle
+          sed -i 's/targetSdkVersion = 35/targetSdkVersion = 36/g' android/variables.gradle
         fi
 
-        # Безопасно поднимаем версию Android Gradle Plugin до 8.9.1, чтобы удовлетворить требования androidx.core
+        # Поднимаем версию Android Gradle Plugin до актуальной 8.9.1
         sed -i 's/com.android.tools.build:gradle:8.7.2/com.android.tools.build:gradle:8.9.1/g' android/build.gradle
 
         # Исправление конфликта Kotlin (Duplicate Classes) через ResolutionStrategy
         sed -i '/allprojects {/a \    configurations.all {\n        resolutionStrategy.eachDependency { DependencyResolveDetails details ->\n            if (details.requested.group == "org.jetbrains.kotlin") {\n                details.useVersion "1.9.22"\n            }\n        }\n    }' android/build.gradle
         
         echo "android.useAndroidX=true" >> android/gradle.properties
-        echo "Все исправления версий и плагина Gradle успешно применены."
+        echo "Все исправления версий и плагина Gradle под Android 36 применены."
 
     - name: Build APK via Gradle
       run: |
