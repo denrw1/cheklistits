@@ -49,17 +49,17 @@ jobs:
         # 5. Синхронизируем веб-код внутрь папки Android
         npx cap sync android
 
-    - name: Fix Kotlin Duplicate Classes Conflict
+    - name: Force Fix Kotlin Conflict in build.gradle
       run: |
-        # Принудительно добавляем правило автоматического разрешения дубликатов классов в настройки gradle
-        echo "android.enableJetifier=true" >> android/gradle.properties
+        # Внедряем жесткое правило в build.gradle для принудительного использования одной версии kotlin-stdlib
+        sed -i '/allprojects {/a \    configurations.all {\n        resolutionStrategy.eachDependency { DependencyResolveDetails details ->\n            if (details.requested.group == "org.jetbrains.kotlin") {\n                details.useVersion "1.9.22"\n            }\n        }\n    }' android/build.gradle
         echo "android.useAndroidX=true" >> android/gradle.properties
+        echo "Конфигурация build.gradle успешно обновлена."
 
     - name: Build APK via Gradle
       run: |
         cd android
         chmod +x gradlew
-        # Запускаем сборку с флагом игнорирования дубликатов старых библиотек
         ./gradlew assembleDebug -Dorg.gradle.jvmargs="-Xmx2048m"
 
     - name: Find and Upload APK
