@@ -28,17 +28,27 @@ jobs:
         sudo apt-get update
         sudo apt-get install -y android-sdk
 
-    - name: Create Mobile Wrapper
+    - name: Create Mobile Wrapper & Add Core Plugins
       run: |
         cordova create myapp com.checklist.its CheklistITS
         cd myapp
         cordova platform add android --no-telemetry
         
-        # Очищаем дефолтные файлы и копируем ваш index.html
+        # Принудительно устанавливаем плагины для доступа к нативной камере и вспышке
+        cordova plugin add cordova-plugin-camera --no-telemetry
+        cordova plugin add cordova-plugin-androidx-adapter --no-telemetry
+        
+        # Очищаем дефолтные файлы и переносим ваш index.html
         rm -rf www/*
         cp -r ../* www/ || true
         rm -rf www/myapp www/node_modules
         
+        # Интегрируем обязательную строчку инициализации Cordova в ваш index.html, чтобы убрать белый экран
+        sed -i 's|<body>|<body><script src="cordova.js"></script>|g' www/index.html
+        
+        # Добавляем мета-тег безопасности CSP (Content Security Policy) для Android WebView
+        sed -i 's|<head>|<head><meta http-equiv="Content-Security-Policy" content="default-src \x27self\x27 data: gap: https://gstatic.com \x27unsafe-eval\x27 \x27unsafe-inline\x27; style-src \x27self\x27 \x27unsafe-inline\x27; media-src \x27self\x27 blob: mediastream:; img-src \x27self\x27 data: blob:;">|g' www/index.html
+
         # Запускаем сборку
         cordova build android --device --no-telemetry
 
