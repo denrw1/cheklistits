@@ -40,16 +40,15 @@ jobs:
         npx cap init CheklistITS com.checklist.its --web-dir=www
         cp -f capacitor.config.json ./capacitor.config.json || true
         
-        # 4. Устанавливаем мобильную платформу Android
-        npm install @capacitor/android
+        # 4. Устанавливаем мобильную платформу Android и плагин нативной Камеры
+        npm install @capacitor/android @capacitor/camera
         npx cap add android
         
-        # 5. Синхронизируем веб-код внуррь папки Android
+        # 5. Синхронизируем веб-код внутрь папки Android
         npx cap sync android
 
     - name: Force Fix Kotlin Conflict in build.gradle
       run: |
-        # Внедряем жесткое правило для разрешения дубликатов Kotlin-классов
         sed -i '/allprojects {/a \    configurations.all {\n        resolutionStrategy.eachDependency { DependencyResolveDetails details ->\n            if (details.requested.group == "org.jetbrains.kotlin") {\n                details.useVersion "1.9.22"\n            }\n        }\n    }' android/build.gradle
         echo "android.useAndroidX=true" >> android/gradle.properties
 
