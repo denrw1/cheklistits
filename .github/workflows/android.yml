@@ -47,9 +47,14 @@ jobs:
         # 5. Синхронизируем веб-код внутрь папки Android
         npx cap sync android
 
-    - name: Force Fix Kotlin Conflict in build.gradle
+    - name: Force Fix Kotlin & Core Dependencies Conflicts
       run: |
+        # Исправление конфликта Kotlin (Duplicate Classes)
         sed -i '/allprojects {/a \    configurations.all {\n        resolutionStrategy.eachDependency { DependencyResolveDetails details ->\n            if (details.requested.group == "org.jetbrains.kotlin") {\n                details.useVersion "1.9.22"\n            }\n        }\n    }' android/build.gradle
+        
+        # Принудительно откатываем androidx.core до стабильной версии 1.12.0 для обхода ошибки Gradle AGP
+        sed -i '/allprojects {/a \    configurations.all {\n        resolutionStrategy.force "androidx.core:core:1.12.0"\n        resolutionStrategy.force "androidx.core:core-ktx:1.12.0"\n    }' android/build.gradle
+        
         echo "android.useAndroidX=true" >> android/gradle.properties
 
     - name: Build APK via Gradle
