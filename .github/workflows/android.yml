@@ -1,4 +1,3 @@
-
 name: Build Android APK
 
 on:
@@ -31,16 +30,22 @@ jobs:
 
     - name: Create Mobile Wrapper
       run: |
+        # 1. Создаем проект Cordova
         cordova create myapp com.checklist.its CheklistITS
         cd myapp
         cordova platform add android --no-telemetry
         
-        # Очищаем дефолтные файлы и копируем ваш рабочий index.html
+        # 2. Устанавливаем плагин для работы с файловой системой
+        cordova plugin add cordova-plugin-file --no-telemetry
+        
+        # 3. Вычищаем дефолтный шаблон
         rm -rf www/*
-        cp -r ../* www/ || true
-        rm -rf myapp www/node_modules
-
-        # Запускаем сборку
+        
+        # 4. Копируем ВАШ index.html и ВАШ config.xml из корня репозитория
+        cp -f ../index.html ./www/index.html
+        cp -f ../config.xml ./config.xml
+        
+        # 5. Запускаем компиляцию
         cordova build android --device --no-telemetry
 
     - name: Find and Upload APK
