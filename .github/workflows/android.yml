@@ -44,12 +44,12 @@ jobs:
         npm install @capacitor/android @capacitor/camera
         npx cap add android
 
-        # [НОВОЕ] Устанавливаем генератор ассетов и нарезаем иконку из папки resources
-        npm install @capacitor/assets --save-dev
-        npx capacitor-assets generate --android
-        
-        # 5. Синхронизируем веб-код внутрь папки Android
-        npx cap sync android
+        # [ОБНОВЛЕНО] Генерируем иконку: берем ваш логотип без фона, а подложку оставляем стандартной белой
+npm install @capacitor/assets --save-dev
+npx capacitor-assets generate --android --icon-foreground-source=resources/icon-foreground.png --icon-background-color=#ffffff
+
+# 5. Синхронизируем веб-код внутрь папки Android
+npx cap sync android
 
     - name: Inject Native Android Camera Permissions
       run: |
