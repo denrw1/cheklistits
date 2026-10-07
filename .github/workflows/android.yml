@@ -45,11 +45,11 @@ jobs:
         npx cap add android
 
         # [ОБНОВЛЕНО] Генерируем иконку: берем ваш логотип без фона, а подложку оставляем стандартной белой
-npm install @capacitor/assets --save-dev
-npx capacitor-assets generate --android --icon-foreground-source=resources/icon-foreground.png --icon-background-color=#ffffff
+        npm install @capacitor/assets --save-dev
+        npx capacitor-assets generate --android --icon-foreground-source=resources/icon-foreground.png --icon-background-color=#ffffff
 
-# 5. Синхронизируем веб-код внутрь папки Android
-npx cap sync android
+        # 5. Синхронизируем веб-код внутрь папки Android
+        npx cap sync android
 
     - name: Inject Native Android Camera Permissions
       run: |
