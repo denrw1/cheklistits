@@ -11,5 +11,13 @@
     "Preferences": {
       "group": "CheklistITS_Storage"
     }
+  },
+  "assets": {
+    "android": {
+      "icon": {
+        "background": "#ffffff",
+        "foreground": "resources/icon-foreground.png"
+      }
+    }
   }
 }
