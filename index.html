@@ -4,163 +4,53 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>АСУ Инспектор</title>
-    <!-- Защищенный CSP, который мы только что проверили на вашем смартфоне -->
+    <!-- Подключаем системный мост Capacitor.js для нативных вызовов Android -->
+    <script src="capacitor.js"></script>
     <meta http-equiv="Content-Security-Policy" content="default-src * 'unsafe-inline' 'unsafe-eval' data: blob: gap: capacitor://*; style-src * 'unsafe-inline'; img-src * data: blob: capacitor://*; media-src * blob: mediastream:;">
     <style>
         :root {
-            --color-primary: #0066cc;
-            --color-success: #2e7d32;
-            --color-success-bg: #e8f5e9;
-            --color-danger: #d32f2f;
-            --color-gray: #666666;
-            --color-bg: #f4f6f9;
-            --color-card: #ffffff;
-            --color-text: #1a1a1a;
-            --radius: 12px;
+            --color-primary: #0066cc; --color-success: #2e7d32; --color-success-bg: #e8f5e9;
+            --color-danger: #d32f2f; --color-gray: #666666; --color-bg: #f4f6f9;
+            --color-card: #ffffff; --color-text: #1a1a1a; --radius: 12px;
         }
-
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
-            background-color: var(--color-bg);
-            color: var(--color-text);
-            margin: 0;
-            padding: 16px;
-            padding-top: max(16px, env(safe-area-inset-top));
-        }
-
+        body { font-family: -apple-system, sans-serif; background-color: var(--color-bg); color: var(--color-text); padding: 16px; padding-top: max(16px, env(safe-area-inset-top)); }
         h2 { font-size: 1.3rem; margin: 0 0 16px 0; font-weight: 700; color: #2c3e50; text-align: center; }
         .subtitle { font-size: 0.9rem; color: var(--color-gray); margin-top: -12px; margin-bottom: 20px; text-align: center; }
-
-        button {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 100%;
-            min-height: 56px;
-            padding: 14px;
-            margin: 12px 0;
-            font-size: 16px;
-            font-weight: 600;
-            background-color: var(--color-primary);
-            color: white;
-            border: none;
-            border-radius: var(--radius);
-            box-shadow: 0 2px 6px rgba(0,102,204,0.15);
-            cursor: pointer;
-        }
+        button { display: flex; align-items: center; justify-content: center; width: 100%; min-height: 56px; padding: 14px; margin: 12px 0; font-size: 16px; font-weight: 600; background-color: var(--color-primary); color: white; border: none; border-radius: var(--radius); box-shadow: 0 2px 6px rgba(0,102,204,0.15); cursor: pointer; }
         button:active { opacity: 0.75; transform: scale(0.98); }
         button.secondary { background-color: var(--color-gray); box-shadow: none; }
         button.success { background-color: var(--color-success); box-shadow: 0 2px 6px rgba(46,125,50,0.15); }
         button.danger { background-color: var(--color-danger); box-shadow: none; }
-
         .screen { display: none; }
         .screen.active { display: block; }
-
         .list-container { max-height: calc(100vh - 200px); overflow-y: auto; margin-top: 10px; padding-bottom: 30px; }
-        
-        .list-item {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 18px;
-            background: var(--color-card);
-            margin-bottom: 10px;
-            border-radius: var(--radius);
-            border-left: 6px solid #bdc3c7;
-            font-weight: 600;
-            font-size: 14px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.03);
-            cursor: pointer;
-        }
-        .list-item.completed {
-            border-left-color: var(--color-success);
-            background-color: var(--color-success-bg);
-            color: #1b5e20;
-        }
+        .list-item { display: flex; align-items: center; justify-content: space-between; padding: 18px; background: var(--color-card); margin-bottom: 10px; border-radius: var(--radius); border-left: 6px solid #bdc3c7; font-weight: 600; font-size: 14px; box-shadow: 0 2px 4px rgba(0,0,0,0.03); cursor: pointer; }
+        .list-item.completed { border-left-color: var(--color-success); background-color: var(--color-success-bg); color: #1b5e20; }
         .badge { font-size: 12px; padding: 4px 8px; border-radius: 20px; background: #eee; color: #666; }
         .completed .badge { background: var(--color-success); color: white; }
-
-        select {
-            width: 100%;
-            padding: 16px;
-            font-size: 16px;
-            font-weight: 500;
-            border-radius: var(--radius);
-            border: 2px solid #ddd;
-            background: var(--color-card);
-            margin-bottom: 20px;
-            outline: none;
-        }
-
-        .media-box {
-            width: 100%;
-            height: 45vh;
-            background: #000;
-            border-radius: var(--radius);
-            overflow: hidden;
-            position: relative;
-            margin-bottom: 15px;
-        }
-        video, img { width: 100%; height: 100%; object-fit: cover; display: block; }
-
-        .filename-banner {
-            font-family: monospace;
-            font-size: 12px;
-            background: #2c3e50;
-            color: #ecf0f1;
-            padding: 12px;
-            border-radius: 8px;
-            margin: 12px 0;
-            word-break: break-all;
-        }
-
-        .modal-overlay {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.5);
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-            backdrop-filter: blur(3px);
-        }
+        select { width: 100%; padding: 16px; font-size: 16px; font-weight: 500; border-radius: var(--radius); border: 2px solid #ddd; background: var(--color-card); margin-bottom: 20px; outline: none; }
+        .media-box { width: 100%; height: 45vh; background: #000; border-radius: var(--radius); overflow: hidden; position: relative; margin-bottom: 15px; }
+        img { width: 100%; height: 100%; object-fit: cover; display: block; }
+        .filename-banner { font-family: monospace; font-size: 12px; background: #2c3e50; color: #ecf0f1; padding: 12px; border-radius: 8px; margin: 12px 0; word-break: break-all; }
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); align-items: center; justify-content: center; z-index: 1000; backdrop-filter: blur(3px); }
         .modal-overlay.active { display: flex; }
-        .modal-card {
-            background: var(--color-card);
-            padding: 24px;
-            border-radius: var(--radius);
-            width: 88%;
-            max-width: 400px;
-        }
-        .modal-card input {
-            width: 100%;
-            padding: 14px;
-            margin: 16px 0;
-            font-size: 16px;
-            border: 2px solid #ddd;
-            border-radius: 8px;
-            outline: none;
-        }
+        .modal-card { background: var(--color-card); padding: 24px; border-radius: var(--radius); width: 88%; max-width: 400px; }
+        .modal-card input { width: 100%; padding: 14px; margin: 16px 0; font-size: 16px; border: 2px solid #ddd; border-radius: 8px; outline: none; }
         .modal-buttons { display: flex; gap: 12px; }
         .modal-buttons button { margin: 0; }
-
-        .error-message {
-            color: var(--color-danger);
-            font-size: 13px;
-            font-weight: bold;
-            margin-top: -10px;
-            margin-bottom: 10px;
-            display: none;
-        }
+        .error-message { color: var(--color-danger); font-size: 13px; font-weight: bold; margin-top: -10px; margin-bottom: 10px; display: none; }
+        #debug-console { background: #000; color: #0f0; font-family: monospace; font-size: 11px; padding: 10px; margin-bottom: 15px; border-radius: 8px; max-height: 120px; overflow-y: auto; border: 2px solid var(--color-danger); }
     </style>
 </head>
 <body>
 
+    <!-- ОКНО ОТЛАДКИ -->
+    <div id="debug-console">Инициализация систем контроля...</div>
+
     <!-- ЭКРАН 1: ГЛАВНОЕ МЕНЮ -->
     <div id="scr-main" class="screen active">
-        <h2 style="margin-top: 40px; margin-bottom: 40px;">Контроль агрегатов АСУ</h2>
+        <h2 style="margin-top: 20px;">Контроль агрегатов АСУ</h2>
         <button id="btn-open-create">Создать новый АСУ</button>
         <button id="btn-open-select" class="secondary">Выбрать имеющийся АСУ</button>
     </div>
@@ -206,37 +96,31 @@
         <div id="render-nodes" class="list-container"></div>
     </div>
 
-    <!-- ЭКРАН 5: СЪЕМКА ИЗ КАМЕРЫ -->
-    <div id="scr-camera" class="screen">
-        <h2 id="header-camera-title">Модуль камеры</h2>
-        <div class="media-box">
-            <video id="webcam-stream" autoplay playsinline></video>
-        </div>
-        <button id="btn-capture">📸 Сделать снимок</button>
-        <button id="btn-flash" class="secondary">🔦 Включить подсветку</button>
-        <button id="btn-cancel-camera" class="danger">Отменить</button>
-    </div>
-
-    <!-- ЭКРАН 6: ВАЛИДАЦИЯ ФОТО -->
+    <!-- ЭКРАН 5: ПРОВЕРКА И КАТАЛОГИЗАЦИЯ СНИМКА -->
     <div id="scr-preview" class="screen">
         <h2>Проверка качества снимка</h2>
         <div class="media-box">
             <img id="img-captured-preview" src="" alt="Превью">
         </div>
         <div class="filename-banner" id="label-filename"></div>
-        <button id="btn-save-photo" class="success">Готово</button>
-        <button id="btn-retake-photo" class="secondary">Переснять</button>
-        <button id="btn-cancel-preview" class="danger">Отменить съемку</button>
+        <button id="btn-save-photo" class="success">Готово (Сохранить в АСУ)</button>
+        <button id="btn-retake-photo" class="secondary">Переснять узел</button>
+        <button id="btn-cancel-preview" class="danger">Отменить</button>
     </div>
 
     <script>
-        // Ваша оригинальная структура данных из 21 контейнера
+        window.onerror = function(msg, url, line) {
+            const errBox = document.getElementById('debug-console');
+            if(errBox) errBox.innerText = "ОШИБКА ДВИЖКА: " + msg + " (Строка: " + line + ")";
+            return false;
+        };
+
         const CONFIG = {
-            storageKey: 'asu_inspector_db_secure',
+            storageKey: 'secure_asu_inspector_local_db',
             nodesStructure: {
                 "1. Контейнер грохота": ["1. Вибромотор грохота общий вид", "2. Вибромотор грохота шильд", "3. Пневмораспределитель заслонки байпаса шильд", "4. Пневмоцилиндр заслонки байпаса общий вид", "5. Пневмоцилиндр заслонки байпаса шильд", "6. Лебедка вибросита общий вид", "7. Лебедка вибросита шильд электродвигателя", "8. Лебедка вибросита шильд редуктора", "9. Корпус подшипника заслонки байпаса", "10. Подшипник заслонки байпаса"],
-"2. Горячий элеватор": ["1. Датчик оборотов горячего элеватора", "2. Корпус подшипника привода горячего элеватора верхний", "3. Подшипник привода горячего элеватора верхний", "4. Корпус подшипника привода горячего элеватора нижний", "5. Подшипник привода горячего элеватора нижний", "6. Мотор-редуктор привода горячего элеватора общий вид", "7. Мотор-редуктор привода горячего элеватора электродвигатель шильд", "8. Мотор-редуктор привода горячего элеватора редуктор шильд", "9. Размеры ковша элеватора"],
-"3. ... Контейнер фильтров": ["1. Аварийный датчик температуры термостат на фильтра", "2. Датчик температуры на фильтрах pt 100", "3. Мотор-редуктор привода заслонок обеспыливания общий вид", "4. Мотор-редуктор привода заслонок обеспыливания электродвигатель", "5. Мотор-редуктор привода заслонок обеспыливания редуктор", "6. Датчик угла поворота заслонок обеспыливания", "7. Двигатель дымососа общий вид", "8. Двигатель дымососа шильд электродвигателя", "9. Маркировка приводных ремней дымососа", "10. Опоры подшипников вала крыльчатки дымососа", "11. Подшипник вала крыльчатки дымососа", "12. Сервопривод воздушной заслонки дымососа общий вид", "13. Сервопривод воздушной заслонки дымососа шильд", "14. Частотный преобразователь общий вид", "15. Частотный преобразователь шильд"],
+                "2. Горячий элеватор": ["1. Датчик оборотов горячего элеватора", "2. Корпус подшипника привода горячего элеватора верхний", "3. Подшипник привода горячего элеватора верхний", "4. Корпус подшипника привода горячего элеватора нижний", "5. Подшипник привода горячего элеватора нижний", "6. Мотор-редуктор привода горячего элеватора общий вид", "7. Мотор-редуктор привода горячего элеватора электродвигатель шильд", "8. Мотор-редуктор привода горячего элеватора редуктор шильд", "9. Размеры ковша элеватора"],
+                "3. ... Контейнер фильтров": ["1. Аварийный датчик температуры термостат на фильтра", "2. Датчик температуры на фильтрах pt 100", "3. Мотор-редуктор привода заслонок обеспыливания общий вид", "4. Мотор-редуктор привода заслонок обеспыливания электродвигатель", "5. Мотор-редуктор привода заслонок обеспыливания редуктор", "6. Датчик угла поворота заслонок обеспыливания", "7. Двигатель дымососа общий вид", "8. Двигатель дымососа шильд электродвигателя", "9. Маркировка приводных ремней дымососа", "10. Опоры подшипников вала крыльчатки дымососа", "11. Подшипник вала крыльчатки дымососа", "12. Сервопривод воздушной заслонки дымососа общий вид", "13. Сервопривод воздушной заслонки дымососа шильд", "14. Частотный преобразователь общий вид", "15. Частотный преобразователь шильд"],
 "4. Контейнер горячих карманов": ["1. Датчик температуры в горячих карманах первый карман", "2. Датчик уровня горячих карманов", "3. Датчик уровня собственной пыли", "4. Пневмораспределитель на цилиндр заслонок ГК", "5. Пневмоцилиндр заслонок горячих карманов общий вид", "6. Пневмоцилиндр заслонок горячих карманов шильд", "7. Опоры подшипников заслонок горячих карманов", "8. Подшипник заслонок горячих карманов", "9. Датчик уровня бункера виатопа перед весами ротационный", "10. Мотор-редуктор шнека виатопа на весы общий вид", "11. Мотор-редуктор шнека виатопа на весы шильд электродвигателя", "12. Мотор-редуктор шнека виатопа на весы шильд редуктора", "13. Станция подготовки воздуха общий вид", "14. Шнек виатопа общий на весы вид", "15. Шнек виатопа на весы шильд"],
 "5. Контейнер смесителя": ["1. Битумный насос подачи с весов на смеситель общий вид", "2. Битумный насос подачи с весов на смеситель шильд насоса", "3. Битумный насос подачи с весов на смеситель шильд электродвигателя", "4. Тензодатчики весов битума 3 шт", "5. Датчик давления на весах битума перелив", "6. Датчик температуры на весах битума", "7. Расходомер жидких добавок битума Терамин", "8. Перепускной клапан терамина после расходомера", "9. Тензодатчик с весов минерала 4 шт", "10. Пневмоцилиндр сброса минерала с весов общий вид", "11. Пневмоцилиндр сброса минерала с весов шильд", "12. Датчик положения пневмоцилиндра сброса минерала", "13. Пневмораспределитель пневмоцилиндра сброса минерала", "14. Опоры подшипников заслонок весов минерала", "15. Подшипник заслонок весов минерала", "16. Тензодатчики весов виатопа 3 шт", "17. Заслонка с весов виатопа в смеситель", "18. Поворотный пневморедуктор заслонки весов виатопа", "19. Пневмораспределитель поворотного редуктора весов виатопа", "20. Тензодатчики весов пыли и мин порошка 3 шт", "21. Заслонка весов пыли и мин порошка шильд", "22. Поворотный пневморедуктор заслонки весов пыли и мин порошка", "23. Пневмораспределитель поворотного редуктора весов пыли", "24. Пневмовибратор на весах пыли общий вид", "25. Пневмовибратор на весах пыли шильд", "26. Мотор-Редуктор привода смесителя общий вид", "27. Мотор-Редуктор привода смесителя шильд электродвигателя", "28. Мотор-Редуктор привода смесителя шильд редуктора", "29. Корпус подшипника вала смесителя", "30. Подшипник вала смесителя", "31. Корпус подшипника заслонки смесителя", "32. Подшипник заслонки смесителя", "33. Корпус подшипника капельного затвора", "34. Подшипник капельного затвора", "35. Пневмоцилиндр заслонки смесителя общий вид", "36. Пневмоцилиндр заслонки смесителя шильд", "37. Датчик положения пневмоцилиндра заслонки смесителя", "38. Пневмораспределитель заслонки смесителя", "39. Пневмоцилиндр капельного затвора общий вид", "40. Пневмоцилиндр капельного затвора шильд", "41. Датчик положения пневмоцилиндра капельного затвора", "42. Пневмораспределитель cylinders капельного затвора", "43. Датчик давления воздуха общий", "44. ИК Датчик температуры смеси на выходе", "45. Фильтр регулятор воздуха на датчик температуры", "46. Линия подготовки воздуха на смеситель", "47. Дополнительный ресивер на весах битума шильд", "48. Дополнительный ресивер на весах битума общий вид", "49. Станция подготовки воздуха на доп ресивере", "50. Датчик уровня бункера брака"],
 "6. Траснпортный контейнер": ["1. Воздушный клапан на аэрацию пыли", "2. Мотор-редуктор шнека сброса пыли общий вид", "3. Мотор-редуктор шнека сброса пыли шильд редуктора", "4. Мотор-редуктор шнека сброса пыли шильд электродвигателя", "5. Шнек сброса пыли общий вид", "6. Шнек сброса пыли шильд", "7. Мотор-редуктор шнека собственной пыли на весы общий вид", "8. Мотор-редуктор шнека собственной пыли на весы шильд редуктора", "9. Мотор-редуктор шнека собственной пыли на весы шильд электродвигателя", "10. Шнек собственной пыли на весы общий вид", "11. Шнек собственной пыли на весы шильд", "12. Заслонка с весов виатопа в смеситель шильд", "13. Заслонка с весов виатопа в смеситель общий вид", "14. Заслонка с весов пыли в смеситель шильд", "15. Заслонка с весов пыли в смеситель общий вид", "16. Датчик уровня на циклоне виатопа", "17. Регулятор давления воздуха на аэрацию собственной пыли"],
@@ -259,32 +143,21 @@
 };
 const DB = {
 state: {},
-async init() {
+init() {
 try {
-if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.Preferences) {
-const { value } = await window.Capacitor.Plugins.Preferences.get({ key: CONFIG.storageKey });
-this.state = JSON.parse(value) || {};
-} else {
-this.state = {};
-}
+const rawData = localStorage.getItem(CONFIG.storageKey);
+this.state = rawData ? JSON.parse(rawData) : {};
 } catch(e) {
 this.state = {};
 }
 UI.updateAsuDropdown();
 },
-async save() {
+save() {
 try {
-if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.Preferences) {
-await window.Capacitor.Plugins.Preferences.set({
-key: CONFIG.storageKey,
-value: JSON.stringify(this.state)
-});
-}
-} catch(e) {
-console.log("Критический сбой сохранения");
-}
+localStorage.setItem(CONFIG.storageKey, JSON.stringify(this.state));
+} catch(e) {}
 },
-async createAsu(name) {
+createAsu(name) {
 this.state[name] = {};
 for (let container in CONFIG.nodesStructure) {
 this.state[name][container] = {};
@@ -292,57 +165,8 @@ CONFIG.nodesStructure[container].forEach(node => {
 this.state[name][container][node] = null;
 });
 }
-await this.save();
+this.save();
 return true;
-}
-};
-const CameraService = {
-stream: null, track: null, isFlashOn: false, currentBlob: null,
-async start() {
-try {
-this.stream = await navigator.mediaDevices.getUserMedia({
-video: { facingMode: { exact: "environment" } }, audio: false
-});
-const videoEl = document.getElementById('webcam-stream');
-if(videoEl) videoEl.srcObject = this.stream;
-this.track = this.stream.getVideoTracks();
-} catch(e) {
-try {
-this.stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
-const videoEl = document.getElementById('webcam-stream');
-if(videoEl) videoEl.srcObject = this.stream;
-this.track = this.stream.getVideoTracks();
-} catch(err) {
-alert("Камера недоступна. Проверьте системные разрешения приложения.");
-}
-}
-},
-async toggleFlash() {
-if (!this.track || this.track.length === 0) return;
-this.isFlashOn = !this.isFlashOn;
-try {
-await this.track[0].applyConstraints({ advanced: [{ torch: this.isFlashOn }] });
-document.getElementById('btn-flash').innerText = this.isFlashOn ? "❌ Выключить подсветку" : "🔦 Включить подсветку";
-} catch(e) {}
-},
-capture() {
-const videoEl = document.getElementById('webcam-stream');
-const canvas = document.createElement('canvas');
-canvas.width = videoEl.videoWidth; canvas.height = videoEl.videoHeight;
-canvas.getContext('2d').drawImage(videoEl, 0, 0, canvas.width, canvas.height);
-canvas.toBlob((blob) => {
-this.currentBlob = blob;
-document.getElementById('img-captured-preview').src = URL.createObjectURL(blob);
-document.getElementById('label-filename').innerText = App.generateFilename();
-this.stop(false);
-UI.showScreen('scr-preview');
-}, 'image/jpeg', 0.95);
-},
-stop(goToNodesScreen = false) {
-if (this.stream) this.stream.getTracks().forEach(t => t.stop());
-this.isFlashOn = false;
-if(document.getElementById('btn-flash')) document.getElementById('btn-flash').innerText = "🔦 Включить подсветку";
-if (goToNodesScreen) UI.showScreen('scr-nodes');
 }
 };
 const UI = {
@@ -376,7 +200,7 @@ dropdown.appendChild(opt);
 });
 },
 renderContainersPage() {
-document.getElementById('header-asu-name').innerText = АСУ: ${App.currentAsu};
+document.getElementById('header-asu-name').innerText = "АСУ: " + App.currentAsu;
 const box = document.getElementById('render-containers');
 box.innerHTML = '';
 for (let container in CONFIG.nodesStructure) {
@@ -386,7 +210,7 @@ const nodes = DB.state[App.currentAsu][container] || {};
 const totalNodes = CONFIG.nodesStructure[container].length;
 const completedNodes = Object.values(nodes).filter(v => v !== null).length;
 if (completedNodes === totalNodes && totalNodes > 0) div.className = 'list-item completed';
-div.innerHTML = <span>${container}</span> <span class="badge">${completedNodes}/${totalNodes}</span>;
+div.innerHTML = "" + container + " <span class="badge">" + completedNodes + "/" + totalNodes + "";
 div.onclick = () => App.actionOpenContainer(container);
 box.appendChild(div);
 }
@@ -401,31 +225,37 @@ CONFIG.nodesStructure[App.currentContainer].forEach(node => {
 const div = document.createElement('div');
 div.className = 'list-item';
 if (nodes[node]) div.className += ' completed';
-div.innerHTML = <span>${node}</span> <span class="badge">${nodes[node] ? "Снято" : "Ожидает"}</span>;
-div.onclick = () => App.actionOpenNodeCamera(node);
+div.innerHTML = "" + node + " <span class="badge">" + (nodes[node] ? "Снято" : "Ожидает") + "";
+div.onclick = () => App.actionNativeCameraCapture(node);
 box.appendChild(div);
 });
 this.showScreen('scr-nodes');
 }
 };
 const App = {
-currentAsu: "", currentContainer: "", currentNode: "",
+currentAsu: "", currentContainer: "", currentNode: "", temporaryBase64: "",
 async init() {
-UI.showScreen('scr-main');
+const con = document.getElementById('debug-console');
 this.bindEvents();
-setTimeout(async () => {
+DB.init();
+con.innerText = "[Система готова. Ожидание прав доступа Android...]";
+// Принудительный системный запрос разрешений ОС Android при старте
 await this.requestNativePermissions();
-await DB.init();
-}, 100);
 },
 async requestNativePermissions() {
+const con = document.getElementById('debug-console');
 if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.Camera) {
 try {
+// Вызываем системное окно ОС Android для Камеры и Памяти
 await window.Capacitor.Plugins.Camera.requestPermissions();
+con.innerText = "[Доступ к Камере и Файлам Android успешно получен]";
 } catch(e) {
-console.log("Права камеры запрошены");
+con.innerText = "[Ошибка инициализации системных прав]: " + e.message;
 }
+} else {
+con.innerText = "[Запущено в браузере. Эмуляция нативного режима]";
 }
+UI.showScreen('scr-main');
 },
 bindEvents() {
 document.getElementById('btn-open-create').onclick = () => UI.openAsuModal();
@@ -435,21 +265,53 @@ document.getElementById('btn-confirm-create').onclick = () => this.actionCreateA
 document.getElementById('btn-back-from-select').onclick = () => UI.showScreen('scr-main');
 document.getElementById('btn-confirm-select').onclick = () => this.actionSelectAsu();
 document.getElementById('btn-back-from-containers').onclick = () => UI.showScreen('scr-main');
-document.getElementById('btn-back-from-nodes').onclick = () => this.navBackToContainers();
-document.getElementById('btn-capture').onclick = () => CameraService.capture();
-document.getElementById('btn-flash').onclick = () => CameraService.toggleFlash();
-document.getElementById('btn-cancel-camera').onclick = () => CameraService.stop(true);
-document.getElementById('btn-save-photo').onclick = () => this.actionSavePhoto();
-document.getElementById('btn-retake-photo').onclick = () => this.actionRetakePhoto();
-document.getElementById('btn-cancel-preview').onclick = () => CameraService.stop(true);
+document.getElementById('btn-back-from-nodes').onclick = () => UI.renderContainersPage();
+document.getElementById('btn-save-photo').onclick = () => this.actionConfirmAndSave();
+document.getElementById('btn-retake-photo').onclick = () => this.actionNativeCameraCapture(this.currentNode);
+document.getElementById('btn-cancel-preview').onclick = () => UI.showScreen('scr-nodes');
 },
-async actionCreateAsu() {
+// НАДЁЖНЫЙ ВЫЗОВ НАТИВНОЙ КАМЕРЫ ЧЕРЕЗ PLUGINS
+async actionNativeCameraCapture(nodeName) {
+this.currentNode = nodeName;
+const con = document.getElementById('debug-console');
+if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.Camera) {
+try {
+// Запуск нативной камеры смартфона
+const image = await window.Capacitor.Plugins.Camera.getPhoto({
+quality: 90,
+allowEditing: false,
+resultType: 'base64',
+source: 'CAMERA'
+});
+this.temporaryBase64 = image.base64String;
+document.getElementById('img-captured-preview').src = "data:image/jpeg;base64," + image.base64String;
+document.getElementById('label-filename').innerText = this.generateFilename();
+UI.showScreen('scr-preview');
+} catch(error) {
+con.innerText = "[Съемка отменена оператором или сбой]: " + error.message;
+}
+} else {
+// Резервный мок для тестирования в браузере ПК
+this.temporaryBase64 = "base64_mock_data";
+document.getElementById('img-captured-preview').src = "placeholder.com";
+document.getElementById('label-filename').innerText = this.generateFilename();
+UI.showScreen('scr-preview');
+}
+},
+actionConfirmAndSave() {
+if(!DB.state[this.currentAsu][this.currentContainer]) DB.state[this.currentAsu][this.currentContainer] = {};
+// Сохраняем имя файла в локальную базу данных
+DB.state[this.currentAsu][this.currentContainer][this.currentNode] = this.generateFilename();
+DB.save();
+UI.renderNodesPage();
+},
+actionCreateAsu() {
 const name = document.getElementById('input-asu-name').value.trim();
 if (!name) {
 document.getElementById('modal-error-1').style.display = 'block';
 return;
 }
-await DB.createAsu(name);
+DB.createAsu(name);
 this.currentAsu = name;
 UI.closeAsuModal();
 UI.renderContainersPage();
@@ -467,35 +329,11 @@ actionOpenContainer(containerName) {
 this.currentContainer = containerName;
 UI.renderNodesPage();
 },
-actionOpenNodeCamera(nodeName) {
-this.currentNode = nodeName;
-UI.showScreen('scr-camera');
-CameraService.start();
-},
-actionRetakePhoto() {
-UI.showScreen('scr-camera');
-CameraService.start();
-},
-async actionSavePhoto() {
-const filename = this.generateFilename();
-if(!DB.state[this.currentAsu][this.currentContainer]) DB.state[this.currentAsu][this.currentContainer] = {};
-DB.state[this.currentAsu][this.currentContainer][this.currentNode] = filename;
-await DB.save();
-// Нативное сохранение файла (скачивание через Blob)
-const link = document.createElement('a');
-link.href = URL.createObjectURL(CameraService.currentBlob);
-link.download = filename;
-link.click();
-UI.renderNodesPage();
-},
-navBackToContainers() { UI.renderContainersPage(); },
 generateFilename() {
-// Корректная генерация имени по техническому регламенту
 const timestamp = new Date().toISOString().slice(0,10);
 const cleanAsu = this.currentAsu.replace(/[/\:?"<>|]/g, '_');
-const cleanNode = this.currentNode.replace(/[/\:?"<>|]/g, '_');
-return IMG_${cleanAsu}_${cleanNode}_${timestamp}.jpg;
+const cleanNode = this.currentNode.replace(/[/\:?"<>|]/g, '');
+return "IMG" + cleanAsu + "" + cleanNode + "" + timestamp + ".jpg";
 }
 };
-// Запуск ядра
 App.init();
