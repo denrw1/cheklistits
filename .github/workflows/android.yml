@@ -26,7 +26,7 @@ jobs:
       run: |
         yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses || true
 
-    - name: Initialize Project & Build Code
+    - name: Инициализация проекта и сборка кода
       run: |
         # 1. Инициализируем Node-проект и ставим Capacitor CLI
         npm init -y
@@ -44,14 +44,23 @@ jobs:
         npm install @capacitor/android @capacitor/camera
         npx cap add android
 
-        # 5. Генерируем адаптивную иконку: логотип по центру + белый фон
-        npm install @capacitor/assets --save-dev
-        npx capacitor-assets generate --android --icon-foreground-source=resources/icon-foreground.png --icon-background-color=#ffffff
+        # 5. Железобетонное копирование вашей иконки напрямую в системные папки Android (БЕЗ утилит генерации)
+        if [ -f "resources/icon-foreground.png" ]; then
+          TARGET_DIR="android/app/src/main/res"
+          cp -f resources/icon-foreground.png $TARGET_DIR/mipmap-mdpi/ic_launcher.png
+          cp -f resources/icon-foreground.png $TARGET_DIR/mipmap-hdpi/ic_launcher.png
+          cp -f resources/icon-foreground.png $TARGET_DIR/mipmap-xhdpi/ic_launcher.png
+          cp -f resources/icon-foreground.png $TARGET_DIR/mipmap-xxhdpi/ic_launcher.png
+          cp -f resources/icon-foreground.png $TARGET_DIR/mipmap-xxxhdpi/ic_launcher.png
+          echo "Иконка приложения успешно скопирована напрямую!"
+        else
+          echo "Предупреждение: Файл resources/icon-foreground.png не найден, будет использована стандартная иконка."
+        fi
         
         # 6. Синхронизируем веб-код внутрь папки Android
         npx cap sync android
 
-    - name: Inject Native Android Camera Permissions
+    - name: Внедрение нативных разрешений камеры Android
       run: |
         MANIFEST_PATH="android/app/src/main/AndroidManifest.xml"
         
@@ -60,9 +69,9 @@ jobs:
         sed -i '/<\/manifest>/i \    <uses-permission android:name="android.permission.FLASHLIGHT" />' $MANIFEST_PATH
         sed -i '/<\/manifest>/i \    <uses-feature android:name="android.hardware.camera" android:required="true" />' $MANIFEST_PATH
         
-        echo "Системные разрешения камеры успешно внедрены in AndroidManifest.xml"
+        echo "Системные разрешения камеры успешно внедрены в AndroidManifest.xml"
 
-    - name: Force Fix SDK Versions & Gradle Configurations
+    - name: Принудительное исправление версий SDK и настроек Gradle
       run: |
         # Поднимаем minSdkVersion до 24 во всех конфигурационных файлах
         find android/ -name "build.gradle" -exec sed -i 's/minSdkVersion = 23/minSdkVersion = 24/g' {} \;
@@ -91,13 +100,13 @@ jobs:
         
         echo "android.useAndroidX=true" >> android/gradle.properties
 
-    - name: Build APK via Gradle
+    - name: Сборка APK через Gradle
       run: |
         cd android
         chmod +x gradlew
         ./gradlew assembleDebug -Dorg.gradle.jvmargs="-Xmx2048m"
 
-    - name: Find and Upload APK
+    - name: Найти и загрузить APK
       uses: actions/upload-artifact@v4
       with:
         name: checklist-capacitor-apk
