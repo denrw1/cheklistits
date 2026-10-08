@@ -1,9 +1,9 @@
-<!DOCTYPE html><html lang="ru"><head>
+<!DOCTYPE html>
+<html lang="ru">
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>АСУ Инспектор</title>
-    <script src="https://capacitorjs.web.app/capacitor.js"></script>
-    <script src="https://capacitorjs.web.app/capacitor-core.js"></script>
     <meta http-equiv="Content-Security-Policy" content="default-src * 'unsafe-inline' 'unsafe-eval' data: blob: gap: capacitor://*; style-src * 'unsafe-inline'; img-src * data: blob: capacitor://*; media-src * blob: mediastream:;">
     <style>
         :root {
@@ -37,9 +37,11 @@
         .modal-card input { width: 100%; padding: 14px; margin: 16px 0; font-size: 16px; border: 2px solid #ddd; border-radius: 8px; outline: none; }
         .modal-buttons { display: flex; gap: 12px; }
         .modal-buttons button { margin: 0; }
-        .error-message { color: var(--color-danger); font-size: 13px; font-weight: bold; margin-top: -10px; margin-bottom: 10px; display: none; }
-        #debug-console { background: #000; color: #0f0; font-family: monospace; font-size: 11px; padding: 10px; margin-bottom: 15px; border-radius: 8px; max-height: 120px; overflow-y: auto; border: 2px solid var(--color-danger); }
-    </style></head><body>
+         .error-message { color: var(--color-danger); font-size: 13px; font-weight: bold; margin-top: -10px; margin-bottom: 10px; display: none; }
+        #debug-console { background: #000; color: #0f0; font-family: monospace; font-size: 11px; padding: 10px; margin-bottom: 15px; border-radius: 8px; max-height: 150px; overflow-y: auto; border: 2px solid var(--color-danger); }
+    </style>
+</head>
+<body>
 
     <div id="debug-console">Инициализация систем контроля...</div>
 
@@ -98,10 +100,22 @@
     </div>
 
     <script>
-        window.onerror = function(msg, url, line) {
-            const errBox = document.getElementById('debug-console');
-            if(errBox) errBox.innerText = "ОШИБКА ДВИЖКА: " + msg + " (Строка: " + line + ")";
-            return false;
+        // Загружаем Capacitor правильно
+        const loadCapacitor = async () => {
+            if (window.Capacitor) {
+                console.log('Capacitor уже загружен');
+                return;
+            }
+            
+            return new Promise((resolve) => {
+                const script = document.createElement('script');
+                script.src = 'https://capacitorjs.web.app/capacitor.js';
+                script.onload = () => {
+                    console.log('Capacitor загружен');
+                    resolve();
+                };
+                document.head.appendChild(script);
+            });
         };
 
         const CONFIG = {
@@ -129,7 +143,7 @@
                 "19. Плавильня битумных брикетов": ["1. Общий вид плавильни", "2. Насос перекачивающий из плавильни общий вид", "3. Насос перекачивающий из плавильни шильд электродвигателя", "4. Насос перекачивающий из плавильни шильд насоса", "5. Горелка подогрева масла в плавильне общий вид", "6. Горелка подогрева масла в плавильне шильд", "7. Горелка подогрева битума в плавильне общий вид", "8. Горелка подогрева битума в плавильне шильд", "9. Датчики давления термомасла плавильни", "10. Датчик температуры термомасла pt100 в плавильне", "11. Датчик температуры битума pt100 в плавильне", "12. Датчик температуры битума в плавильне механический", "13. Датчик температуры термомасла в плавильне механический", "14. Датчик уровня термомасла в расширительном бачке", "15. Датчик уровня термомасла в расширительном бачке шильд", "16. Циркуляционный насос термомасла общий вид", "17. Циркуляционный насос термомасла шильд электродвигателя", "18. Циркуляционный насос термомасла шильд насоса"],
                  "20. SKIP": ["1. Мотор-редуктор привода тросов тележки общий вид", "2. Мотор-редуктор привода тросов тележки шильд электродвигателя", "3. Мотор-редуктор привода тросов тележки шильд редуктора", "4. Датчик приближения на барабане намотки тросов", "5. Корпус подшипника приводного барабана скипа", "6. Подшипник приводного барабана скипа", "7. Счётчик импульсов барабана", "8. Общий вид ресивера скипа", "9. Шильд ресивера скипа", "10. Манометр на ресивере скипа", "11. Станция подготовки воздуха на скип", "12. Пневмоцилиндр сбросных заслонок скипа общий вид", "13. Пневмоцилиндр сбросных заслонок скипа шильд", "14. Пневмораспределитель на pneumatic цилиндр сбросных заслонок", "15. Корпус подшипника сбросных заслонок скипа", "16. Подшипник сбросных заслонок скипа", "17. Датчик положения парковки скиповой тележки", "18. Корпус подшипников роликов поддержки тросов", "19. Подшипник роликов поддержки тросов скипа", "20. Общий вид пневмоцилиндра стопора брака скипа", "21. Пневмоцилиндры стопоров тележки скипа", "22. Пневмораспределитель цилиндров стопоров тележки скипа", "23. Пневмораспределители цилиндров крышек накопителей скипа", "24. Пневмоцилиндр крышек накопителей скипа", "25. Общий вид цилиндра бункера брака скипа", "26. Датчик аварийный скиповой тележки нижний", "27. Датчик аварийный скиповой тележки верхний", "28. Датчик положения тележка скипа снизу", "29. Частотный преобразователь"],
                 "21. Контейнер собственной пыли": ["1. Заслонка шнека собственной пыли на весы", "2. Корпус заслонки шнека собственной пыли на весы", "3. Датчик уровня собственной пыли", "4. Мотор-редуктор шнека собственной пыли общий вид", "5. Мотор-редуктор шнека собственной пыли шильд редуктора", "6. Мотор-редуктор шнека собственной пыли шильд электродвигателя", "7. Мотор-редуктор шнека собственной пыли на весы общий вид", "8. Мотор-редуктор шнека собственной пыли на весы шильд редуктора", "9. Мотор-редуктор шнека собственной пыли на весы шильд электродвигателя", "10. Шнек собственной пыли на весы общий вид", "11. Шнек собственной пыли на весы шильд"]
-            }
+             }
         };
 
         const DB = {
@@ -146,7 +160,9 @@
             save() {
                 try {
                     localStorage.setItem(CONFIG.storageKey, JSON.stringify(this.state));
-                } catch(e) {}
+                } catch(e) {
+                    log('Ошибка сохранения БД: ' + e.message);
+                }
             },
             async createAsu(name) {
                 this.state[name] = {};
@@ -157,114 +173,98 @@
                     });
                 }
                 this.save();
-                
-                // Создаём структуру папок на диске
-                await FileSystem.createAsuFolders(name);
                 return true;
             }
         };
 
         const FileSystem = {
             async createAsuFolders(asuName) {
-                const con = document.getElementById('debug-console');
+                log('[Создание папок АСУ: ' + asuName + ']');
                 
-                // Проверяем наличие Capacitor и плагина Filesystem
                 if (!window.Capacitor) {
-                    con.innerText = "[Capacitor не инициализирован]";
-                    return;
+                    log('[Браузер - папки не создаются]');
+                    return true;
                 }
 
                 try {
                     const { Filesystem, Directory } = window.Capacitor.Plugins;
                     
                     if (!Filesystem) {
-                        con.innerText = "[Filesystem плагин недоступен]";
-                        return;
+                        log('[Filesystem недоступен]');
+                        return false;
                     }
 
-                    // Запрашиваем права доступа
-                    try {
-                        await Filesystem.requestPermissions();
-                         con.innerText = "[✓ Права доступа получены]";
-                    } catch(permError) {
-                        con.innerText = "[⚠ Ошибка прав: " + permError.message + "]";
-                    }
-
-                    // Создаём главную папку АСУ
+                    // Создаём главную папку
                     const asuPath = `ASU_Inspector/${asuName}`;
                     
                     try {
                         await Filesystem.mkdir({
                             path: asuPath,
-                            directory: Directory.Documents,
+                             directory: Directory.Documents,
                             recursive: true
                         });
-                        con.innerText = `[✓ Папка АСУ создана: ${asuName}]`;
-                    } catch(mkdirError) {
-                        con.innerText = `[⚠ Папка может уже существовать]`;
+                        log('[✓ Папка АСУ создана]');
+                    } catch(e) {
+                        log('[⚠ Папка АСУ уже существует]');
                     }
 
-                    // Создаём папки для каждого контейнера
-                    let createdCount = 0;
+                    // Создаём папки для контейнеров
+                    let count = 0;
                     for (let container in CONFIG.nodesStructure) {
                         try {
-                            const containerPath = `${asuPath}/${container}`;
                             await Filesystem.mkdir({
-                                path: containerPath,
+                                path: `${asuPath}/${container}`,
                                 directory: Directory.Documents,
                                 recursive: true
                             });
-                            createdCount++;
-                        } catch(e) {
-                            // Папка может уже существовать
-                        }
+                            count++;
+                        } catch(e) {}
                     }
 
-                    con.innerText = `[✓ Структура АСУ "${asuName}" готова (${createdCount} контейнеров)]`;
+                    log('[✓ Создано ' + count + ' папок контейнеров]');
+                    return true;
                 } catch(error) {
-                    con.innerText = `[✗ Ошибка]: ${error.message}`;
+                    log('[✗ Ошибка FS: ' + error.message + ']');
+                    return false;
                 }
             },
 
             async savePhotoToFile(asuName, containerName, nodeName, base64Data) {
-                const con = document.getElementById('debug-console');
+                log('[Сохранение фото...]');
                 
                 if (!window.Capacitor) {
-                    con.innerText = "[Capacitor не инициализирован]";
-                    return false;
+                    log('[Браузер - фото не сохраняется]');
+                    return 'browser_' + Date.now() + '.jpg';
                 }
 
                 try {
                     const { Filesystem, Directory } = window.Capacitor.Plugins;
                     
                     if (!Filesystem) {
-                        con.innerText = "[Filesystem плагин недоступен]";
+                        log('[Filesystem недоступен]');
                         return false;
-                    }
-
-                    // Запрашиваем права доступа
-                    try {
-                        await Filesystem.requestPermissions();
-                    } catch(permError) {
-                        con.innerText = "[⚠ Ошибка прав: " + permError.message + "]";
                     }
 
                     const filename = App.generateFilename();
                     const filepath = `ASU_Inspector/${asuName}/${containerName}/${filename}`;
 
-                    // Сохраняем файл
+                    // Удаляем префикс data:image если есть
+                    let cleanBase64 = base64Data;
+                    if (base64Data.includes(',')) {
+                        cleanBase64 = base64Data.split(',')[1];
+                    }
+
                     await Filesystem.writeFile({
                         path: filepath,
-                        data: base64Data,
+                        data: cleanBase64,
                         directory: Directory.Documents,
-                        recursive: true,
-                        encoding: 'utf8'
+                        recursive: true
                     });
 
-                    con.innerText = `[✓ Фото сохранено: ${filename}]`;
+                    log('[✓ Фото сохранено: ' + filename + ']');
                     return filename;
                 } catch(error) {
-                    con.innerText = `[✗ Ошибка сохранения]: ${error.message}`;
+                    log('[✗ Ошибка сохранения: ' + error.message + ']');
                     return false;
                 }
             }
@@ -279,10 +279,11 @@
             },
             openAsuModal() {
                 document.getElementById('modal-error-1').style.display = 'none';
+                document.getElementById('input-asu-name').value = '';
                 document.getElementById('modal-asu').classList.add('active');
             },
             closeAsuModal() {
-                 document.getElementById('modal-asu').classList.remove('active');
+                document.getElementById('modal-asu').classList.remove('active');
                 document.getElementById('input-asu-name').value = '';
             },
             openScreenSelectAsu() {
@@ -297,7 +298,7 @@
                 Object.keys(DB.state).forEach(name => {
                     let opt = document.createElement('option');
                     opt.value = name;
-                    opt.innerText = name;
+                     opt.innerText = name;
                     dropdown.appendChild(opt);
                 });
             },
@@ -309,7 +310,7 @@
                     const div = document.createElement('div');
                     div.className = 'list-item';
                     const nodes = DB.state[App.currentAsu][container] || {};
-                     const totalNodes = CONFIG.nodesStructure[container].length;
+                    const totalNodes = CONFIG.nodesStructure[container].length;
                     const completedNodes = Object.values(nodes).filter(v => v !== null).length;
                     if (completedNodes === totalNodes && totalNodes > 0) div.className = 'list-item completed';
                     div.innerHTML = `${container} <span class="badge">${completedNodes}/${totalNodes}</span>`;
@@ -318,26 +319,25 @@
                 }
                 this.showScreen('scr-containers');
             },
-           renderNodesPage() {
-    document.getElementById('header-container-name').innerText = App.currentContainer;
-    const box = document.getElementById('render-nodes');
-    box.innerHTML = '';
-    const nodes = DB.state[App.currentAsu][App.currentContainer] || {};
-    CONFIG.nodesStructure[App.currentContainer].forEach(node => {
-        const div = document.createElement('div');
-        div.className = 'list-item';
-        if (nodes[node]) div.className += ' completed';
-        
-        // Извлекаем только номер и название
-        const nodeText = node.replace(/^\d+\.\s*/, ''); // Убираем "13. " в начале
-        const nodeNumber = node.match(/^\d+/)[0]; // Берём только номер
-        
-        div.innerHTML = `<span>${nodeNumber}. ${nodeText}</span> <span class="badge">${nodes[node] ? "Снято" : "Ожидает"}</span>`;
-        div.onclick = () => App.actionNativeCameraCapture(node);
-        box.appendChild(div);
-    });
-    this.showScreen('scr-nodes');
-}
+            renderNodesPage() {
+                document.getElementById('header-container-name').innerText = App.currentContainer;
+                const box = document.getElementById('render-nodes');
+                box.innerHTML = '';
+                const nodes = DB.state[App.currentAsu][App.currentContainer] || {};
+                CONFIG.nodesStructure[App.currentContainer].forEach(node => {
+                    const div = document.createElement('div');
+                    div.className = 'list-item';
+                    if (nodes[node]) div.className += ' completed';
+                    
+                    const nodeText = node.replace(/^\d+\.\s*/, '');
+                    const nodeNumber = node.match(/^\d+/)[0];
+                    
+                    div.innerHTML = `<span>${nodeNumber}. ${nodeText}</span> <span class="badge">${nodes[node] ? "Снято" : "Ожидает"}</span>`;
+                    div.onclick = () => App.actionNativeCameraCapture(node);
+                    box.appendChild(div);
+                });
+                this.showScreen('scr-nodes');
+            }
         };
 
         const App = {
@@ -347,18 +347,17 @@
             temporaryBase64: "",
 
             async init() {
-                const con = document.getElementById('debug-console');
+                log('[Инициализация приложения]');
                 this.bindEvents();
                 await DB.init();
-                con.innerText = "[Система готова. Инициализация Capacitor...]";
                 await this.requestNativePermissions();
             },
 
             async requestNativePermissions() {
-                const con = document.getElementById('debug-console');
+                log('[Запрос прав доступа]');
                 
                 if (!window.Capacitor) {
-                    con.innerText = "[Запущено в браузере. Эмуляция режима]";
+                    log('[Запущено в браузере]');
                     UI.showScreen('scr-main');
                     return;
                 }
@@ -366,36 +365,34 @@
                 try {
                     const { Camera, Filesystem } = window.Capacitor.Plugins;
                     
-                    // Запрашиваем права на камеру
                     if (Camera) {
                         try {
-                                                        await Camera.requestPermissions();
-                            con.innerText = "[✓ Доступ к Камере получен]";
+                            await Camera.requestPermissions();
+                            log('[✓ Доступ к Камере]');
                         } catch(e) {
-                            con.innerText = "[⚠ Доступ к Камере: " + e.message + "]";
+                            log('[⚠ Камера: ' + e.message + ']');
                         }
                     }
 
-                    // Запрашиваем права на файловую систему
                     if (Filesystem) {
                         try {
                             await Filesystem.requestPermissions();
-                            con.innerText = "[✓ Доступ к Файлам получен]";
+                            log('[✓ Доступ к Файлам]');
                         } catch(e) {
-                            con.innerText = "[⚠ Доступ к Файлам: " + e.message + "]";
+                            log('[⚠ Файлы: ' + e.message + ']');
                         }
                     }
 
-                    con.innerText = "[✓ Все права получены. Система готова]";
+                    log('[✓ Система готова]');
                 } catch(e) {
-                    con.innerText = "[⚠ Ошибка инициализации]: " + e.message;
+                    log('[✗ Ошибка: ' + e.message + ']');
                 }
                 
                 UI.showScreen('scr-main');
             },
 
             bindEvents() {
-                document.getElementById('btn-open-create').onclick = () => UI.openAsuModal();
+                 document.getElementById('btn-open-create').onclick = () => UI.openAsuModal();
                 document.getElementById('btn-open-select').onclick = () => UI.openScreenSelectAsu();
                 document.getElementById('btn-cancel-create').onclick = () => UI.closeAsuModal();
                 document.getElementById('btn-confirm-create').onclick = () => this.actionCreateAsu();
@@ -410,10 +407,10 @@
 
             async actionNativeCameraCapture(nodeName) {
                 this.currentNode = nodeName;
-                const con = document.getElementById('debug-console');
+                log('[Открытие камеры для: ' + nodeName.substring(0, 30) + ']');
                 
                 if (!window.Capacitor) {
-                    // Режим эмуляции в браузере
+                    log('[Браузер - используется тестовое изображение]');
                     this.temporaryBase64 = "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==";
                     document.getElementById('img-captured-preview').src = "data:image/png;base64," + this.temporaryBase64;
                     document.getElementById('label-filename').innerText = this.generateFilename();
@@ -425,7 +422,7 @@
                     const { Camera } = window.Capacitor.Plugins;
                     
                     if (!Camera) {
-                        con.innerText = "[Camera плагин недоступен]";
+                        log('[Camera плагин недоступен]');
                         return;
                     }
 
@@ -439,17 +436,16 @@
                     this.temporaryBase64 = image.base64String;
                     document.getElementById('img-captured-preview').src = "data:image/jpeg;base64," + image.base64String;
                     document.getElementById('label-filename').innerText = this.generateFilename();
+                    log('[✓ Фото захвачено]');
                     UI.showScreen('scr-preview');
                 } catch(error) {
-                    con.innerText = "[Съемка отменена]: " + error.message;
+                    log('[✗ Ошибка камеры: ' + error.message + ']');
                 }
             },
 
             async actionConfirmAndSave() {
-                  const con = document.getElementById('debug-console');
-                con.innerText = "[Сохранение фото...]";
+                log('[Сохранение фото...]');
 
-                // Сохраняем фото на диск
                 const savedFilename = await FileSystem.savePhotoToFile(
                     this.currentAsu,
                     this.currentContainer,
@@ -458,25 +454,27 @@
                 );
 
                 if (savedFilename) {
-                    // Обновляем БД с именем файла
                     if(!DB.state[this.currentAsu][this.currentContainer]) {
                         DB.state[this.currentAsu][this.currentContainer] = {};
                     }
                     DB.state[this.currentAsu][this.currentContainer][this.currentNode] = savedFilename;
                     DB.save();
+                    log('[✓ Фото сохранено в БД]');
                     UI.renderNodesPage();
                 } else {
-                    con.innerText = "[✗ Ошибка сохранения фото]";
+                    log('[✗ Ошибка сохранения]');
                 }
             },
 
             async actionCreateAsu() {
                 const name = document.getElementById('input-asu-name').value.trim();
                 if (!name) {
-                    document.getElementById('modal-error-1').style.display = 'block';
+                     document.getElementById('modal-error-1').style.display = 'block';
                     return;
                 }
+                log('[Создание АСУ: ' + name + ']');
                 await DB.createAsu(name);
+                await FileSystem.createAsuFolders(name);
                 this.currentAsu = name;
                 UI.closeAsuModal();
                 UI.renderContainersPage();
@@ -488,12 +486,14 @@
                     document.getElementById('modal-error-2').style.display = 'block';
                     return;
                 }
+                log('[Выбран АСУ: ' + selected + ']');
                 this.currentAsu = selected;
                 UI.renderContainersPage();
             },
 
             actionOpenContainer(containerName) {
                 this.currentContainer = containerName;
+                log('[Открыт контейнер: ' + containerName + ']');
                 UI.renderNodesPage();
             },
 
@@ -505,7 +505,23 @@
             }
         };
 
-        App.init();
+        // Функция логирования
+        function log(msg) {
+            const con = document.getElementById('debug-console');
+            if (con) {
+                const lines = con.innerText.split('\n');
+                lines.push(msg);
+                if (lines.length > 10) lines.shift();
+                con.innerText = lines.join('\n');
+            }
+            console.log(msg);
+        }
+
+        // Запуск приложения
+        window.addEventListener('DOMContentLoaded', async () => {
+            await loadCapacitor();
+            await App.init();
+        });
     </script>
 </body>
 </html>
