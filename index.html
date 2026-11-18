@@ -1,4 +1,3 @@
-html
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -13,19 +12,19 @@ html
             --color-card: #ffffff; --color-text: #1a1a1a; --radius: 12px;
         }
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { font-family: -apple-system, sans-serif; background-color: var(--color-bg); color: var(--color-text); padding: 16px; padding-top: max(16px, env(safe-area-inset-top)); }
+        body { font-family: -apple-system, sans-serif; background-color: var(--color-bg); color: var(--color-text); padding: 16px; padding-top: max(16px, env(safe-area-inset-top)); margin: 0; }
         h2 { font-size: 1.3rem; margin: 0 0 16px 0; font-weight: 700; color: #2c3e50; text-align: center; }
-        .subtitle { font-size: 0.9rem; color: var(--color-gray); margin-top: -12px; margin-bottom: 20px; text-align: center; }
-        button { display: flex; align-items: center; justify-content: center; width: 100%; min-height: 56px; padding: 14px; margin: 12px 0; font-size: 16px; font-weight: 600; background-color: var(--color-primary); color: white; border: none; border-radius: var(--radius); box-shadow: 0 2px 6px rgba(0,102,204,0.15); cursor: pointer; }
+        .subtitle { font-size: 0.9rem; color: var(--color-gray); margin-top: -12px; margin-bottom: 16px; text-align: center; }
+        button { display: flex; align-items: center; justify-content: center; width: 100%; min-height: 54px; padding: 14px; margin: 10px 0; font-size: 16px; font-weight: 600; background-color: var(--color-primary); color: white; border: none; border-radius: var(--radius); box-shadow: 0 2px 6px rgba(0,102,204,0.15); cursor: pointer; }
         button:active { opacity: 0.75; transform: scale(0.98); }
         button.secondary { background-color: var(--color-gray); box-shadow: none; }
         button.success { background-color: var(--color-success); box-shadow: 0 2px 6px rgba(46,125,50,0.15); }
         button.danger { background-color: var(--color-danger); box-shadow: none; }
-        button.outline { background-color: transparent; color: var(--color-primary); border: 2px solid var(--color-primary); box-shadow: none; }
+        button.outline { background-color: #ffffff; color: var(--color-primary); border: 2px solid var(--color-primary); box-shadow: none; min-height: 46px; font-size: 14px; }
         .screen { display: none; }
         .screen.active { display: block; }
-        .list-container { max-height: calc(100vh - 220px); overflow-y: auto; margin-top: 10px; padding-bottom: 30px; }
-        .list-item { display: flex; align-items: center; justify-content: space-between; padding: 18px; background: var(--color-card); margin-bottom: 10px; border-radius: var(--radius); border-left: 6px solid #bdc3c7; font-weight: 600; font-size: 14px; box-shadow: 0 2px 4px rgba(0,0,0,0.03); cursor: pointer; gap: 10px; }
+        .list-container { max-height: calc(100vh - 280px); overflow-y: auto; margin-top: 10px; padding-bottom: 30px; }
+        .list-item { display: flex; align-items: center; justify-content: space-between; padding: 16px; background: var(--color-card); margin-bottom: 10px; border-radius: var(--radius); border-left: 6px solid #bdc3c7; font-weight: 600; font-size: 14px; box-shadow: 0 2px 4px rgba(0,0,0,0.03); cursor: pointer; gap: 10px; }
         .list-item.completed { border-left-color: var(--color-success); background-color: var(--color-success-bg); color: #1b5e20; }
         .badge { font-size: 12px; padding: 4px 8px; border-radius: 20px; background: #eee; color: #666; white-space: nowrap; }
         .completed .badge { background: var(--color-success); color: white; }
@@ -33,8 +32,8 @@ html
         .media-box { width: 100%; height: 45vh; background: #000; border-radius: var(--radius); overflow: hidden; position: relative; margin-bottom: 15px; }
         img { width: 100%; height: 100%; object-fit: cover; display: block; }
         .filename-banner { font-family: monospace; font-size: 12px; background: #2c3e50; color: #ecf0f1; padding: 12px; border-radius: 8px; margin: 12px 0; word-break: break-all; }
-        .path-card { background: var(--color-card); border: 2px dashed #bdc3c7; border-radius: var(--radius); padding: 12px; margin: 12px 0; font-size: 13px; color: #2c3e50; word-break: break-all; }
-        .path-card.selected { border-color: var(--color-success); background: var(--color-success-bg); }
+        .folder-box { background: var(--color-card); border: 2px dashed #bdc3c7; border-radius: var(--radius); padding: 12px; margin: 10px 0; font-size: 13px; color: #2c3e50; word-break: break-all; }
+        .folder-box.selected { border-color: var(--color-success); background: var(--color-success-bg); }
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); align-items: center; justify-content: center; z-index: 1000; backdrop-filter: blur(3px); }
         .modal-overlay.active { display: flex; }
         .modal-card { background: var(--color-card); padding: 24px; border-radius: var(--radius); width: 88%; max-width: 400px; }
@@ -42,27 +41,21 @@ html
         .modal-buttons { display: flex; gap: 12px; }
         .modal-buttons button { margin: 0; }
         .error-message { color: var(--color-danger); font-size: 13px; font-weight: bold; margin-top: -10px; margin-bottom: 10px; display: none; }
-        #debug-console { background: #000; color: #0f0; font-family: monospace; font-size: 11px; padding: 10px; margin-bottom: 15px; border-radius: 8px; max-height: 150px; overflow-y: auto; border: 2px solid var(--color-danger); }
+        #debug-console { background: #000; color: #0f0; font-family: monospace; font-size: 11px; padding: 8px; margin-bottom: 12px; border-radius: 8px; max-height: 90px; overflow-y: auto; border: 1px solid #333; }
     </style>
 </head>
 <body>
 
-    <div id="debug-console">Инициализация систем контроля...</div>
+    <div id="debug-console">Запуск системы...</div>
 
-    <!-- ГЛАВНЫЙ ЭКРАН -->
+    <!-- 1. ГЛАВНЫЙ ЭКРАН -->
     <div id="scr-main" class="screen active">
         <h2 style="margin-top: 20px;">Контроль агрегатов АСУ</h2>
-        
-        <div id="folder-status-box" class="path-card">
-            <strong>Папка сохранения:</strong> <span id="lbl-current-folder">Не выбрана</span>
-        </div>
-        <button id="btn-choose-folder" class="outline">📁 Выбрать папку сохранения</button>
-
-        <button id="btn-open-create">Создать новый АСУ</button>
-        <button id="btn-open-select" class="secondary">Выбрать имеющийся АСУ</button>
+        <button type="button" id="btn-open-create">Создать новый АСУ</button>
+        <button type="button" id="btn-open-select" class="secondary">Выбрать имеющийся АСУ</button>
     </div>
 
-    <!-- МОДАЛЬНОЕ ОКНО СОЗДАНИЯ АСУ -->
+    <!-- МОДАЛКА СОЗДАНИЯ АСУ -->
     <div id="modal-asu" class="modal-overlay">
         <div class="modal-card">
             <h2>Регистрация нового АСУ</h2>
@@ -70,85 +63,76 @@ html
             <input type="text" id="input-asu-name" placeholder="Например: АСУ 2026 CSM2500B">
             <div id="modal-error-1" class="error-message">Название не может быть пустым!</div>
             <div class="modal-buttons">
-                <button id="btn-confirm-create" class="success">ОК</button>
-                <button id="btn-cancel-create" class="danger">Отмена</button>
+                <button type="button" id="btn-confirm-create" class="success">ОК</button>
+                <button type="button" id="btn-cancel-create" class="danger">Отмена</button>
             </div>
         </div>
     </div>
 
-    <!-- МОДАЛЬНОЕ ОКНО РУЧНОГО ВВОДА ПУТИ (ЕСЛИ НЕТ ПЛАГИНА ВЫБОРА ПАПКИ) -->
+    <!-- МОДАЛКА РУЧНОГО ВВОДА ПУТИ (ЕСЛИ ВЫБРАН РУЧНОЙ РЕЖИМ) -->
     <div id="modal-folder-manual" class="modal-overlay">
         <div class="modal-card">
-            <h2>Путь в памяти телефона</h2>
-            <p style="margin: 0; color: var(--color-gray); font-size: 13px;">Укажите имя папки, которую вы создали в «Документах» (Documents) или внутренней памяти:</p>
-            <input type="text" id="input-folder-path" placeholder="Например: Мой_Объект_1">
+            <h2>Папка в памяти телефона</h2>
+            <p style="margin: 0; color: var(--color-gray); font-size: 13px;">Введите название папки в памяти телефона (например, внутри Documents или корень), куда сохранять фото этого отсека:</p>
+            <input type="text" id="input-folder-path" placeholder="Например: Горячий_элеватор">
             <div class="modal-buttons">
-                <button id="btn-confirm-folder-manual" class="success">Сохранить</button>
-                <button id="btn-cancel-folder-manual" class="danger">Отмена</button>
+                <button type="button" id="btn-confirm-folder-manual" class="success">Сохранить</button>
+                <button type="button" id="btn-cancel-folder-manual" class="danger">Отмена</button>
             </div>
         </div>
     </div>
 
-    <!-- ЭКРАН ВЫБОРА АСУ -->
+    <!-- 2. ЭКРАН ВЫБОРА АСУ -->
     <div id="scr-select-asu" class="screen">
-        <button id="btn-back-from-select" class="secondary">⬅ В главное меню</button>
+        <button type="button" id="btn-back-from-select" class="secondary">⬅ В главное меню</button>
         <h2>Список активных АСУ</h2>
         <select id="select-asu-dropdown">
             <option value="">-- Выберите установку --</option>
         </select>
         <div id="modal-error-2" class="error-message" style="margin-top: 0; margin-bottom: 15px;">Пожалуйста, выберите АСУ из списка!</div>
-        <button id="btn-confirm-select">Открыть выбранный АСУ</button>
+        <button type="button" id="btn-confirm-select">Открыть выбранный АСУ</button>
     </div>
 
-    <!-- ЭКРАН КОНТЕЙНЕРОВ -->
+    <!-- 3. ЭКРАН КОНТЕЙНЕРОВ -->
     <div id="scr-containers" class="screen">
-        <button id="btn-back-from-containers" class="secondary">⬅ В меню</button>
+        <button type="button" id="btn-back-from-containers" class="secondary">⬅ В меню</button>
         <h2 id="header-asu-name">Контейнеры установки</h2>
         <div class="subtitle">Выберите отсек для проведения съемки</div>
-        <div id="render-containers" class="list-container"></div>
+        <div id="render-containers" class="list-container" style="max-height: calc(100vh - 200px);"></div>
     </div>
 
-    <!-- ЭКРАН УЗЛОВ -->
+    <!-- 4. ЭКРАН УЗЛОВ (С ВЫБОРОМ ПАПКИ ИМЕННО ДЛЯ ЭТОГО ОТСЕКА) -->
     <div id="scr-nodes" class="screen">
-        <button id="btn-back-from-nodes" class="secondary">⬅ К контейнерам</button>
+        <button type="button" id="btn-back-from-nodes" class="secondary">⬅ К контейнерам</button>
         <h2 id="header-container-name">Узлы агрегата</h2>
-        <div class="subtitle">Зеленым цветом отмечены зафиксированные узлы</div>
+        
+        <div id="container-folder-box" class="folder-box">
+            <strong>Папка сохранения отсека:</strong><br>
+            <span id="lbl-container-folder">Не выбрана</span>
+        </div>
+        <button type="button" id="btn-choose-container-folder" class="outline">📁 Выбрать папку для этого отсека</button>
+
+        <div class="subtitle" style="margin-top: 8px;">Нажмите на узел для съемки</div>
         <div id="render-nodes" class="list-container"></div>
     </div>
 
-    <!-- ЭКРАН ПРЕВЬЮ ФОТО -->
+    <!-- 5. ЭКРАН ПРЕВЬЮ -->
     <div id="scr-preview" class="screen">
         <h2>Проверка качества снимка</h2>
         <div class="media-box">
             <img id="img-captured-preview" src="" alt="Превью">
         </div>
         <div class="filename-banner" id="label-filename"></div>
-        <button id="btn-save-photo" class="success">Готово (Сохранить в папку)</button>
-        <button id="btn-retake-photo" class="secondary">Переснять узел</button>
-        <button id="btn-cancel-preview" class="danger">Отменить</button>
+        <button type="button" id="btn-save-photo" class="success">Готово (Сохранить фото)</button>
+        <button type="button" id="btn-retake-photo" class="secondary">Переснять узел</button>
+        <button type="button" id="btn-cancel-preview" class="danger">Отменить</button>
     </div>
 
     <script>
-        const loadCapacitor = async () => {
-            if (window.Capacitor) {
-                console.log('Capacitor уже загружен');
-                return;
-            }
-            return new Promise((resolve) => {
-                const script = document.createElement('script');
-                script.src = 'https://web.app';
-                script.onload = () => {
-                    console.log('Capacitor загружен');
-                    resolve();
-                };
-                document.head.appendChild(script);
-            });
-        };
-
         const CONFIG = {
             storageKey: 'secure_asu_inspector_local_db',
             indexStorageKey: 'secure_asu_inspector_index_map',
-            folderStorageKey: 'secure_asu_inspector_save_folder',
+            containerFoldersKey: 'secure_asu_inspector_container_folders',
             nodesStructure: {
                 "1. Контейнер грохота": ["1. Вибромотор грохота общий вид", "2. Вибромотор грохота шильд", "3. Пневмораспределитель заслонки байпаса шильд", "4. Пневмоцилиндр заслонки байпаса общий вид", "5. Пневмоцилиндр заслонки байпаса шильд", "6. Лебедка вибросита общий вид", "7. Лебедка вибросита шильд электродвигателя", "8. Лебедка вибросита шильд редуктора", "9. Корпус подшипника заслонки байпаса", "10. Подшипник заслонки байпаса"],
 "2. Горячий элеватор": ["1. Датчик оборотов горячего элеватора", "2. Корпус подшипника привода горячего элеватора верхний", "3. Подшипник привода горячего элеватора верхний", "4. Корпус подшипника привода горячего элеватора нижний", "5. Подшипник привода горячего элеватора нижний", "6. Мотор-редуктор привода горячего элеватора общий вид", "7. Мотор-редуктор привода горячего элеватора электродвигатель шильд", "8. Мотор-редуктор привода горячего элеватора редуктор шильд", "9. Размеры ковша элеватора"],
@@ -173,15 +157,13 @@ html
 "21. Контейнер собственной пыли": ["1. Заслонка шнека собственной пыли на весы", "2. Корпус заслонки шнека собственной пыли на весы", "3. Датчик уровня собственной пыли", "4. Мотор-редуктор шнека собственной пыли общий вид", "5. Мотор-редуктор шнека собственной пыли шильд редуктора", "6. Мотор-редуктор шнека собственной пыли шильд электродвигателя", "7. Мотор-редуктор шнека собственной пыли на весы общий вид", "8. Мотор-редуктор шнека собственной пыли на весы шильд редуктора", "9. Мотор-редуктор шнека собственной пыли на весы шильд электродвигателя", "10. Шнек собственной пыли на весы общий вид", "11. Шнек собственной пыли на весы шильд"]
 }
 };
-// Менеджер постоянных индексов (00001, 00002, 00003...)
+// Сквозная индексация 00001, 00002, 00003... для каждого названия
 const IndexManager = {
 data: { counter: 0, map: {} },
 init() {
 try {
 const raw = localStorage.getItem(CONFIG.indexStorageKey);
-if (raw) {
-this.data = JSON.parse(raw);
-}
+if (raw) this.data = JSON.parse(raw);
 } catch(e) {
 this.data = { counter: 0, map: {} };
 }
@@ -189,21 +171,20 @@ this.data = { counter: 0, map: {} };
 save() {
 localStorage.setItem(CONFIG.indexStorageKey, JSON.stringify(this.data));
 },
-// Возвращает постоянный индекс для каждого названия (привязка: Контейнер + Узел)
-getIndexForNode(containerName, nodeName) {
-const uniqueKey = ${containerName}::${nodeName};
-if (!this.data.map[uniqueKey]) {
+getIndex(containerName, nodeName) {
+const key = ${containerName}::${nodeName};
+if (!this.data.map[key]) {
 this.data.counter += 1;
-this.data.map[uniqueKey] = String(this.data.counter).padStart(5, '0');
+this.data.map[key] = String(this.data.counter).padStart(5, '0');
 this.save();
 }
-return this.data.map[uniqueKey];
+return this.data.map[key];
 }
 };
 const DB = {
 state: {},
-saveFolder: null, // { path: string, uri: string|null, display: string }
-async init() {
+containerFolders: {}, // Хранит выбранную папку для каждого АСУ и контейнера отдельно
+init() {
 try {
 const rawData = localStorage.getItem(CONFIG.storageKey);
 this.state = rawData ? JSON.parse(rawData) : {};
@@ -211,27 +192,30 @@ this.state = rawData ? JSON.parse(rawData) : {};
 this.state = {};
 }
 try {
-const rawFolder = localStorage.getItem(CONFIG.folderStorageKey);
-this.saveFolder = rawFolder ? JSON.parse(rawFolder) : null;
+const rawFolders = localStorage.getItem(CONFIG.containerFoldersKey);
+this.containerFolders = rawFolders ? JSON.parse(rawFolders) : {};
 } catch(e) {
-this.saveFolder = null;
+this.containerFolders = {};
 }
-UI.updateFolderDisplay();
 UI.updateAsuDropdown();
 },
 save() {
-try {
 localStorage.setItem(CONFIG.storageKey, JSON.stringify(this.state));
-} catch(e) {
-log('Ошибка сохранения БД: ' + e.message);
-}
 },
-setSaveFolder(folderObj) {
-this.saveFolder = folderObj;
-localStorage.setItem(CONFIG.folderStorageKey, JSON.stringify(folderObj));
-UI.updateFolderDisplay();
+saveFolders() {
+localStorage.setItem(CONFIG.containerFoldersKey, JSON.stringify(this.containerFolders));
 },
-async createAsu(name) {
+getFolderForContainer(asuName, containerName) {
+const key = ${asuName}::${containerName};
+return this.containerFolders[key] || null;
+},
+setFolderForContainer(asuName, containerName, folderObj) {
+const key = ${asuName}::${containerName};
+this.containerFolders[key] = folderObj;
+this.saveFolders();
+UI.updateContainerFolderDisplay();
+},
+createAsu(name) {
 this.state[name] = {};
 for (let container in CONFIG.nodesStructure) {
 this.state[name][container] = {};
@@ -240,85 +224,66 @@ this.state[name][container][node] = null;
 });
 }
 this.save();
-return true;
 }
 };
 const FileSystem = {
-// Выбор папки во внутренней памяти телефона
-async chooseSaveDirectory() {
-if (!window.Capacitor) {
-UI.openManualFolderModal();
-return;
-}
-const plugins = window.Capacitor.Plugins || {};
-// Проверяем наличие нативного FilePicker (если установлен @capawesome/capacitor-file-picker)
+async chooseFolderForCurrentContainer() {
+const plugins = (window.Capacitor && window.Capacitor.Plugins) ? window.Capacitor.Plugins : {};
+// Пробуем открыть системный выбор папки Android
 if (plugins.FilePicker && typeof plugins.FilePicker.pickDirectory === 'function') {
 try {
 const result = await plugins.FilePicker.pickDirectory();
 if (result && result.path) {
 const cleanName = decodeURIComponent(result.path).split('/').pop() || result.path;
-DB.setSaveFolder({
+DB.setFolderForContainer(App.currentAsu, App.currentContainer, {
 path: result.path,
 isUri: result.path.startsWith('content://') || result.path.startsWith('file://'),
 display: cleanName
 });
-log('[✓ Папка выбрана: ' + cleanName + ']');
+log('[✓ Выбрана папка: ' + cleanName + ']');
 return;
 }
 } catch (e) {
-log('[⚠ Отмена или ошибка проводника: ' + e.message + ']');
+log('[⚠ Проводник: ' + e.message + ']');
 }
-} else {
-// Запасной вариант: ручной ввод имени созданной пользователем папки
+}
+// Если плагин не сработал или не установлен — открываем ввод имени папки вручную
 UI.openManualFolderModal();
-}
 },
-// Сохранение фото напрямую в выбранную папку под именем 00001.jpg, 00002.jpg ...
-async savePhotoToFile(indexFilename, base64Data) {
-log('[Сохранение файла: ' + indexFilename + ']');
-if (!DB.saveFolder) {
-alert('Сначала выберите папку сохранения на главном экране!');
-log('[✗ Папка сохранения не выбрана]');
+async savePhotoToContainerFolder(asuName, containerName, indexFilename, base64Data) {
+const folder = DB.getFolderForContainer(asuName, containerName);
+if (!folder) {
+alert('Сначала выберите папку сохранения для этого отсека!');
 return false;
 }
-if (!window.Capacitor) {
-log('[Браузер - имитация сохранения ' + indexFilename + ']');
+if (!window.Capacitor || !window.Capacitor.Plugins || !window.Capacitor.Plugins.Filesystem) {
+log('[Тест в браузере: сохранено ' + indexFilename + ' в ' + folder.display + ']');
 return indexFilename;
 }
 try {
 const { Filesystem, Directory } = window.Capacitor.Plugins;
-if (!Filesystem) {
-log('[Filesystem недоступен]');
-return false;
-}
-let cleanBase64 = base64Data;
-if (base64Data.includes(',')) {
-cleanBase64 = base64Data.split(',')[1];
-}
-if (DB.saveFolder.isUri) {
-// Если выбран системный URI (content:// или file://)
-const baseUri = DB.saveFolder.path.replace(//$/, '');
+let cleanBase64 = base64Data.includes(',') ? base64Data.split(',')[1] : base64Data;
+if (folder.isUri) {
+const baseUri = folder.path.replace(//$/, '');
 await Filesystem.writeFile({
 path: ${baseUri}/${indexFilename},
 data: cleanBase64,
 recursive: false
 });
 } else {
-// Если указана папка внутри Documents / внутренней памяти
-const folderClean = DB.saveFolder.path.replace(/^/+|/+$/g, '');
-const targetPath = folderClean ? ${folderClean}/${indexFilename} : indexFilename;
+const cleanPath = folder.path.replace(/^/+|/+$/g, '');
 await Filesystem.writeFile({
-path: targetPath,
+path: ${cleanPath}/${indexFilename},
 data: cleanBase64,
 directory: Directory.Documents,
 recursive: false
 });
 }
-log('[✓ Сохранено в папку: ' + indexFilename + ']');
+log('[✓ Сохранено: ' + indexFilename + ' -> ' + folder.display + ']');
 return indexFilename;
-} catch(error) {
-log('[✗ Ошибка записи: ' + error.message + ']');
-alert('Ошибка сохранения в выбранную папку. Проверьте, что папка существует и есть права доступа.');
+} catch (err) {
+log('[✗ Ошибка записи: ' + err.message + ']');
+alert('Не удалось сохранить в выбранную папку: ' + err.message + '\nУбедитесь, что папка создана в памяти телефона.');
 return false;
 }
 }
@@ -327,15 +292,16 @@ const UI = {
 showScreen(id) {
 document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
 const el = document.getElementById(id);
-if(el) el.classList.add('active');
+if (el) el.classList.add('active');
 window.scrollTo(0, 0);
 },
-updateFolderDisplay() {
-const box = document.getElementById('folder-status-box');
-const lbl = document.getElementById('lbl-current-folder');
+updateContainerFolderDisplay() {
+const box = document.getElementById('container-folder-box');
+const lbl = document.getElementById('lbl-container-folder');
 if (!box || !lbl) return;
-if (DB.saveFolder && DB.saveFolder.display) {
-lbl.innerText = DB.saveFolder.display;
+const folder = DB.getFolderForContainer(App.currentAsu, App.currentContainer);
+if (folder && folder.display) {
+lbl.innerText = folder.display;
 box.classList.add('selected');
 } else {
 lbl.innerText = 'Не выбрана (выберите перед съемкой)';
@@ -343,8 +309,9 @@ box.classList.remove('selected');
 }
 },
 openManualFolderModal() {
+const folder = DB.getFolderForContainer(App.currentAsu, App.currentContainer);
 const input = document.getElementById('input-folder-path');
-input.value = (DB.saveFolder && !DB.saveFolder.isUri) ? DB.saveFolder.path : '';
+input.value = (folder && !folder.isUri) ? folder.path : '';
 document.getElementById('modal-folder-manual').classList.add('active');
 },
 closeManualFolderModal() {
@@ -357,7 +324,6 @@ document.getElementById('modal-asu').classList.add('active');
 },
 closeAsuModal() {
 document.getElementById('modal-asu').classList.remove('active');
-document.getElementById('input-asu-name').value = '';
 },
 openScreenSelectAsu() {
 document.getElementById('modal-error-2').style.display = 'none';
@@ -366,10 +332,10 @@ this.showScreen('scr-select-asu');
 },
 updateAsuDropdown() {
 const dropdown = document.getElementById('select-asu-dropdown');
-if(!dropdown) return;
+if (!dropdown) return;
 dropdown.innerHTML = '-- Выберите установку --';
 Object.keys(DB.state).forEach(name => {
-let opt = document.createElement('option');
+const opt = document.createElement('option');
 opt.value = name;
 opt.innerText = name;
 dropdown.appendChild(opt);
@@ -382,7 +348,7 @@ box.innerHTML = '';
 for (let container in CONFIG.nodesStructure) {
 const div = document.createElement('div');
 div.className = 'list-item';
-const nodes = DB.state[App.currentAsu][container] || {};
+const nodes = (DB.state[App.currentAsu] && DB.state[App.currentAsu][container]) || {};
 const totalNodes = CONFIG.nodesStructure[container].length;
 const completedNodes = Object.values(nodes).filter(v => v !== null).length;
 if (completedNodes === totalNodes && totalNodes > 0) div.className = 'list-item completed';
@@ -394,19 +360,17 @@ this.showScreen('scr-containers');
 },
 renderNodesPage() {
 document.getElementById('header-container-name').innerText = App.currentContainer;
+this.updateContainerFolderDisplay();
 const box = document.getElementById('render-nodes');
 box.innerHTML = '';
-const nodes = DB.state[App.currentAsu][App.currentContainer] || {};
+const nodes = (DB.state[App.currentAsu] && DB.state[App.currentAsu][App.currentContainer]) || {};
 CONFIG.nodesStructure[App.currentContainer].forEach(node => {
 const div = document.createElement('div');
 div.className = 'list-item';
 if (nodes[node]) div.className += ' completed';
-// Название в программе остается прежним
-const nodeText = node.replace(/^\d+.\s*/, '');
-const nodeNumber = node.match(/^\d+/)[0];
-const assignedIndex = IndexManager.getIndexForNode(App.currentContainer, node);
-div.innerHTML = <span>${nodeNumber}. ${nodeText}</span> <span class="badge">${nodes[node] ? "Снято (" + assignedIndex + ")" : "Индекс " + assignedIndex}</span>;
-div.onclick = () => App.actionNativeCameraCapture(node);
+const idx = IndexManager.getIndex(App.currentContainer, node);
+div.innerHTML = <span>${node}</span> <span class="badge">${nodes[node] ? "Снято (" + idx + ")" : idx}</span>;
+div.onclick = () => App.actionCaptureNode(node);
 box.appendChild(div);
 });
 this.showScreen('scr-nodes');
@@ -417,61 +381,22 @@ currentAsu: "",
 currentContainer: "",
 currentNode: "",
 temporaryBase64: "",
-async init() {
-log('[Инициализация приложения]');
+init() {
+// Сразу привязываем все кнопки без ожидания внешних скриптов!
 this.bindEvents();
 IndexManager.init();
-await DB.init();
-await this.requestNativePermissions();
+DB.init();
+UI.showScreen('scr-main');
+log('[✓ Система готова к работе]');
+this.requestPermissionsBackground();
 },
-async requestNativePermissions() {
-log('[Запрос прав доступа]');
-if (!window.Capacitor) {
-log('[Запущено в браузере]');
-UI.showScreen('scr-main');
-return;
-}
-try {
+async requestPermissionsBackground() {
+if (!window.Capacitor || !window.Capacitor.Plugins) return;
 const { Camera, Filesystem } = window.Capacitor.Plugins;
-if (Camera) {
-try {
-await Camera.requestPermissions();
-log('[✓ Доступ к Камере]');
-} catch(e) {
-log('[⚠ Камера: ' + e.message + ']');
-}
-}
-if (Filesystem) {
-try {
-await Filesystem.requestPermissions();
-log('[✓ Доступ к Файлам]');
-} catch(e) {
-log('[⚠ Файлы: ' + e.message + ']');
-}
-}
-log('[✓ Система готова]');
-} catch(e) {
-log('[✗ Ошибка: ' + e.message + ']');
-}
-UI.showScreen('scr-main');
+try { if (Camera) await Camera.requestPermissions(); } catch(e) {}
+try { if (Filesystem) await Filesystem.requestPermissions(); } catch(e) {}
 },
 bindEvents() {
-document.getElementById('btn-choose-folder').onclick = () => FileSystem.chooseSaveDirectory();
-document.getElementById('btn-confirm-folder-manual').onclick = () => {
-const val = document.getElementById('input-folder-path').value.trim();
-if (!val) {
-alert('Введите название папки!');
-return;
-}
-DB.setSaveFolder({
-path: val,
-isUri: false,
-display: Documents/${val}
-});
-UI.closeManualFolderModal();
-log('[✓ Указана папка: Documents/' + val + ']');
-};
-document.getElementById('btn-cancel-folder-manual').onclick = () => UI.closeManualFolderModal();
 document.getElementById('btn-open-create').onclick = () => UI.openAsuModal();
 document.getElementById('btn-open-select').onclick = () => UI.openScreenSelectAsu();
 document.getElementById('btn-cancel-create').onclick = () => UI.closeAsuModal();
@@ -480,31 +405,71 @@ document.getElementById('btn-back-from-select').onclick = () => UI.showScreen('s
 document.getElementById('btn-confirm-select').onclick = () => this.actionSelectAsu();
 document.getElementById('btn-back-from-containers').onclick = () => UI.showScreen('scr-main');
 document.getElementById('btn-back-from-nodes').onclick = () => UI.renderContainersPage();
+// Выбор папки именно для текущего контейнера
+document.getElementById('btn-choose-container-folder').onclick = () => FileSystem.chooseFolderForCurrentContainer();
+document.getElementById('btn-cancel-folder-manual').onclick = () => UI.closeManualFolderModal();
+document.getElementById('btn-confirm-folder-manual').onclick = () => {
+const val = document.getElementById('input-folder-path').value.trim();
+if (!val) {
+alert('Введите название папки!');
+return;
+}
+DB.setFolderForContainer(this.currentAsu, this.currentContainer, {
+path: val,
+isUri: false,
+display: Documents/${val}
+});
+UI.closeManualFolderModal();
+log('[✓ Папка отсека: Documents/' + val + ']');
+};
 document.getElementById('btn-save-photo').onclick = () => this.actionConfirmAndSave();
-document.getElementById('btn-retake-photo').onclick = () => this.actionNativeCameraCapture(this.currentNode);
+document.getElementById('btn-retake-photo').onclick = () => this.actionCaptureNode(this.currentNode);
 document.getElementById('btn-cancel-preview').onclick = () => UI.showScreen('scr-nodes');
 },
-async actionNativeCameraCapture(nodeName) {
-if (!DB.saveFolder) {
-alert('Перед съемкой выберите папку сохранения на главном экране!');
+actionCreateAsu() {
+const name = document.getElementById('input-asu-name').value.trim();
+if (!name) {
+document.getElementById('modal-error-1').style.display = 'block';
+return;
+}
+DB.createAsu(name);
+this.currentAsu = name;
+UI.closeAsuModal();
+UI.renderContainersPage();
+log('[✓ Создан АСУ: ' + name + ']');
+},
+actionSelectAsu() {
+const selected = document.getElementById('select-asu-dropdown').value;
+if (!selected) {
+document.getElementById('modal-error-2').style.display = 'block';
+return;
+}
+this.currentAsu = selected;
+UI.renderContainersPage();
+log('[✓ Открыт АСУ: ' + selected + ']');
+},
+actionOpenContainer(containerName) {
+this.currentContainer = containerName;
+UI.renderNodesPage();
+log('[✓ Отсек: ' + containerName + ']');
+},
+async actionCaptureNode(nodeName) {
+const folder = DB.getFolderForContainer(this.currentAsu, this.currentContainer);
+if (!folder) {
+alert('Сначала нажмите «📁 Выбрать папку для этого отсека» сверху!');
 return;
 }
 this.currentNode = nodeName;
-const targetFilename = this.generateFilename();
-log('[Съемка: ' + nodeName.substring(0, 25) + ' -> ' + targetFilename + ']');
-if (!window.Capacitor) {
+const filename = this.generateFilename();
+if (!window.Capacitor || !window.Capacitor.Plugins || !window.Capacitor.Plugins.Camera) {
 this.temporaryBase64 = "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==";
 document.getElementById('img-captured-preview').src = "data:image/png;base64," + this.temporaryBase64;
-document.getElementById('label-filename').innerText = Узел: ${nodeName}\nФайл в телефоне: ${targetFilename};
+document.getElementById('label-filename').innerText = Узел: ${nodeName}\nПапка: ${folder.display}\nИмя файла: ${filename};
 UI.showScreen('scr-preview');
 return;
 }
 try {
 const { Camera } = window.Capacitor.Plugins;
-if (!Camera) {
-log('[Camera плагин недоступен]');
-return;
-}
 const image = await Camera.getPhoto({
 quality: 90,
 allowEditing: false,
@@ -513,61 +478,32 @@ source: 'CAMERA'
 });
 this.temporaryBase64 = image.base64String;
 document.getElementById('img-captured-preview').src = "data:image/jpeg;base64," + image.base64String;
-document.getElementById('label-filename').innerText = Узел: ${nodeName}\nФайл в телефоне: ${targetFilename};
-log('[✓ Фото захвачено]');
+document.getElementById('label-filename').innerText = Узел: ${nodeName}\nПапка: ${folder.display}\nИмя файла: ${filename};
 UI.showScreen('scr-preview');
-} catch(error) {
-log('[✗ Ошибка камеры: ' + error.message + ']');
+} catch (err) {
+log('[✗ Камера: ' + err.message + ']');
 }
 },
 async actionConfirmAndSave() {
 const filename = this.generateFilename();
-const savedFilename = await FileSystem.savePhotoToFile(
+const saved = await FileSystem.savePhotoToContainerFolder(
+this.currentAsu,
+this.currentContainer,
 filename,
 this.temporaryBase64
 );
-if (savedFilename) {
-if(!DB.state[this.currentAsu][this.currentContainer]) {
+if (saved) {
+if (!DB.state[this.currentAsu][this.currentContainer]) {
 DB.state[this.currentAsu][this.currentContainer] = {};
 }
-DB.state[this.currentAsu][this.currentContainer][this.currentNode] = savedFilename;
+DB.state[this.currentAsu][this.currentContainer][this.currentNode] = saved;
 DB.save();
-log('[✓ Записано в БД как ' + savedFilename + ']');
 UI.renderNodesPage();
 }
 },
-async actionCreateAsu() {
-const name = document.getElementById('input-asu-name').value.trim();
-if (!name) {
-document.getElementById('modal-error-1').style.display = 'block';
-return;
-}
-log('[Создание АСУ без авто-папок: ' + name + ']');
-await DB.createAsu(name);
-// Автоматическое создание папок отключено
-this.currentAsu = name;
-UI.closeAsuModal();
-UI.renderContainersPage();
-},
-actionSelectAsu() {
-const selected = document.getElementById('select-asu-dropdown').value;
-if (!selected) {
-document.getElementById('modal-error-2').style.display = 'block';
-return;
-}
-log('[Выбран АСУ: ' + selected + ']');
-this.currentAsu = selected;
-UI.renderContainersPage();
-},
-actionOpenContainer(containerName) {
-this.currentContainer = containerName;
-log('[Открыт контейнер: ' + containerName + ']');
-UI.renderNodesPage();
-},
-// Имя файла в телефоне — строго присвоенный 5-значный индекс (00001.jpg, 00002.jpg ...)
 generateFilename() {
-const index = IndexManager.getIndexForNode(this.currentContainer, this.currentNode);
-return ${index}.jpg;
+const idx = IndexManager.getIndex(this.currentContainer, this.currentNode);
+return ${idx}.jpg;
 }
 };
 function log(msg) {
@@ -575,12 +511,15 @@ const con = document.getElementById('debug-console');
 if (con) {
 const lines = con.innerText.split('\n');
 lines.push(msg);
-if (lines.length > 10) lines.shift();
+if (lines.length > 6) lines.shift();
 con.innerText = lines.join('\n');
 }
-console.log(msg);
 }
-window.addEventListener('DOMContentLoaded', async () => {
-await loadCapacitor();
-await App.init();
-});
+// Гарантированный мгновенный запуск кнопок
+if (document.readyState === 'loading') {
+document.addEventListener('DOMContentLoaded', () => App.init());
+} else {
+App.init();
+}
+
+
