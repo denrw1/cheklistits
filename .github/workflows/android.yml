@@ -40,8 +40,8 @@ jobs:
         npx cap init CheklistITS com.checklist.its --web-dir=www
         cp -f capacitor.config.json ./capacitor.config.json || true
         
-        # 4. Устанавливаем мобильную платформу Android и плагин нативной Камеры
-        npm install @capacitor/android @capacitor/camera
+        #  # 4. Устанавливаем мобильную платформу Android и нужные плагины (Камера, Файлы, Выбор папки)
+        npm install @capacitor/android @capacitor/camera @capacitor/filesystem @capawesome/capacitor-file-picker
         npx cap add android
 
         # 5. Железобетонное копирование вашей иконки напрямую в системные папки Android (БЕЗ утилит генерации)
