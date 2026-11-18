@@ -67,9 +67,11 @@ jobs:
         # Принудительно прописываем системные разрешения Android перед закрывающим тегом </manifest>
         sed -i '/<\/manifest>/i \    <uses-permission android:name="android.permission.CAMERA" />' $MANIFEST_PATH
         sed -i '/<\/manifest>/i \    <uses-permission android:name="android.permission.FLASHLIGHT" />' $MANIFEST_PATH
+        sed -i '/<\/manifest>/i \    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />' $MANIFEST_PATH
+        sed -i '/<\/manifest>/i \    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />' $MANIFEST_PATH
         sed -i '/<\/manifest>/i \    <uses-feature android:name="android.hardware.camera" android:required="true" />' $MANIFEST_PATH
         
-        echo "Системные разрешения камеры успешно внедрены в AndroidManifest.xml"
+        echo "Системные разрешения успешно внедрены в AndroidManifest.xml"
 
     - name: Принудительное исправление версий SDK и настроек Gradle
       run: |
